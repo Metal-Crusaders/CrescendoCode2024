@@ -36,11 +36,11 @@ public class RobotContainer
 {
 
   // The robot's subsystems and commands are defined here...
-  private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
+  final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-  private final Shamper shamper = new Shamper(true);
-  private final Pivot pivot = new Pivot();
-  private final Intake intake = new Intake();
+  final Shamper shamper = new Shamper(true);
+  final Pivot pivot = new Pivot();
+  final Intake intake = new Intake();
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   XboxController driverXbox = new XboxController(RobotMap.DriverConstants.DRIVER_ID);

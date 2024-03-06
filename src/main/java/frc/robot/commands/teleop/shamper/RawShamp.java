@@ -35,7 +35,7 @@ public class RawShamp extends Command {
     @Override
     public void initialize() {
         shamper.setIndexSpeed(0);
-        shamper.setShampSpeed(0);
+        shamper.setShooterMotorSpeed(0);
         shamper.setMode(modeToggle);
     }
 
@@ -50,14 +50,14 @@ public class RawShamp extends Command {
         }
 
         shamper.setIndexSpeed(deadband(indexSpeed, 0.05));
-        shamper.setShampSpeed(deadband(shooterSpeed, 0.05));
+        shamper.setShooterMotorSpeed(deadband(shooterSpeed, 0.05));
         shamper.setMode(modeToggle);
     }
 
     @Override
     public void end(boolean interrupted) {
         shamper.setIndexSpeed(0);
-        shamper.setShampSpeed(0);
+        shamper.setShooterMotorSpeed(0);
         shamper.setMode(true);
     }
 

@@ -36,6 +36,8 @@ public class Intake extends SubsystemBase {
             this.setSpeed(INTAKE_MAX_SPEED);
         } else if (!intake && outtake) {
             this.setSpeed(-INTAKE_MAX_SPEED);
+        } else {
+            this.setSpeed(0.0);
         }
     }
     

@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+  // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -7,7 +7,6 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
-import swervelib.parser.PIDFConfig;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide numerical or boolean constants. This
@@ -32,11 +31,14 @@ public final class RobotMap
 
   public static final class ShamperConstants {
 
-    public static final int INDEXER_CAN_ID = 13;
-    public static final int AMP_CAN_ID = 14;
+    public static final int INDEXER_CAN_ID = 14;
+    public static final int AMP_CAN_ID = 13;
     public static final int SHOOTER_CAN_ID = 15;
 
-    public static final double kP = 0.0004;
+    public static final boolean SHOOTER_MOTOR_INVERTED = false;
+    public static final boolean AMP_MOTOR_INVERTED = true;
+
+    public static final double kP = 1;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kFF = 0.00017;
@@ -62,10 +64,9 @@ public final class RobotMap
     public static final int DIO_PIVOT_IN = 2;
     public static final int DIO_PIVOT_OUT = 3;
 
-    public static final double kP = 0.0004;
+    public static final double kP = 0.00033; // TODO FIGURE THIS OUT TOO
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kFF = 0.00017;
   }
 
   public static class DriverConstants {

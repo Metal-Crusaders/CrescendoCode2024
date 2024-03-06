@@ -2,6 +2,7 @@ package frc.robot.commands.teleop.pivot;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pivot;
 
@@ -33,9 +34,10 @@ public class RawPivot extends Command {
     @Override
     public void execute() {
         
-        double pivotSpeed = pivotUpControl.getAsDouble() - pivotDownControl.getAsDouble();
-
-        pivot.setPivotSpeed(deadband(pivotSpeed, 0.05));
+        double pivotSpeed = deadband(pivotUpControl.getAsDouble() - pivotDownControl.getAsDouble(), 0.05);
+        SmartDashboard.putNumber("Pivot Speed", pivotSpeed);
+        SmartDashboard.putNumber("Encoder Ticks", pivot.getEncoderTicks());
+        pivot.setPivotSpeed(pivotSpeed);
 
     }
 

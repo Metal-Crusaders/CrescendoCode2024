@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -18,15 +17,15 @@ import frc.robot.RobotMap;
  * 
  * Velocity PID for the shooter motor (and by default, amp motor as well)
  */
-public class Shamper extends SubsystemBase{
+public class Shamper extends SubsystemBase {
+
+    public static double INDEX_SPEED = 0.5;
 
     CANSparkMax indexer, ampMotor, shooterMotor;
-    RelativeEncoder shooterEncoder;
 
-    private SparkPIDController velocityPID;
+    private SparkPIDController shooterVelocityPID, ampVelocityPID;
 
     private boolean mode; // false for amp, true for speaker // TODO need to confirm this
-    private double targetSpeed;
 
     public Shamper(boolean defaultMode) {
 
@@ -35,20 +34,26 @@ public class Shamper extends SubsystemBase{
         this.ampMotor = new CANSparkMax(RobotMap.ShamperConstants.AMP_CAN_ID, MotorType.kBrushless);
         this.shooterMotor = new CANSparkMax(RobotMap.ShamperConstants.SHOOTER_CAN_ID, MotorType.kBrushless);
 
-        this.shooterEncoder = shooterMotor.getEncoder();
-
         // shooter vs. amp stuff
-        this.shooterMotor.setInverted(false); // TODO fix this if needed
-        this.ampMotor.follow(this.shooterMotor);
+        this.shooterMotor.setInverted(RobotMap.ShamperConstants.SHOOTER_MOTOR_INVERTED); // TODO fix this if needed
+        this.ampMotor.setInverted(RobotMap.ShamperConstants.AMP_MOTOR_INVERTED); // TODO fix this if needed
         this.setMode(defaultMode);
 
+        // shooter velocity PID setup!
+        this.shooterVelocityPID = this.shooterMotor.getPIDController();
+        this.shooterVelocityPID.setP(RobotMap.ShamperConstants.kP);
+        this.shooterVelocityPID.setI(RobotMap.ShamperConstants.kI);
+        this.shooterVelocityPID.setD(RobotMap.ShamperConstants.kD);
+        this.shooterVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
+        this.shooterVelocityPID.setOutputRange(-1, 1);
+
         // velocity PID setup!
-        this.velocityPID = this.shooterMotor.getPIDController();
-        this.velocityPID.setP(RobotMap.ShamperConstants.kP);
-        this.velocityPID.setI(RobotMap.ShamperConstants.kI);
-        this.velocityPID.setD(RobotMap.ShamperConstants.kD);
-        this.velocityPID.setFF(RobotMap.ShamperConstants.kFF);
-        this.velocityPID.setOutputRange(-1, 1);
+        this.ampVelocityPID = this.ampMotor.getPIDController();
+        this.ampVelocityPID.setP(RobotMap.ShamperConstants.kP);
+        this.ampVelocityPID.setI(RobotMap.ShamperConstants.kI);
+        this.ampVelocityPID.setD(RobotMap.ShamperConstants.kD);
+        this.ampVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
+        this.ampVelocityPID.setOutputRange(-1, 1);
     }
 
     /*
@@ -60,12 +65,16 @@ public class Shamper extends SubsystemBase{
         this.ampMotor.setInverted(mode);
     }
 
+    public boolean getMode() {
+        return this.mode;
+    }
+
     /*
      * true -> speaker
      * false -> amp
      */
-    public String getMode() {
-        return ((mode) ? "shooter" : "amp");
+    public String getModeString() {
+        return ((this.mode) ? "shooter" : "amp");
     }
 
     public void setIndexSpeed(double speed) {
@@ -76,19 +85,20 @@ public class Shamper extends SubsystemBase{
         return this.indexer.get();
     }
 
-    public double getTargetShampSpeed() {
-        return this.targetSpeed;
-    }
-
-    public double getCurrentShampSpeed() {
+    public double getCurrentShooterMotorSpeed() {
         return this.shooterMotor.get();
     }
     
-    /*
-     * Sets the percentage speed of the shooter / amp
-     */
-    public void setShampSpeed(double speed) {
-        this.velocityPID.setReference(speed, ControlType.kVelocity);
+    public void setShooterMotorSpeed(double speed) {
+        this.shooterVelocityPID.setReference(speed, ControlType.kVelocity);
+    }
+
+    public double getCurrentAmpMotorSpeed() {
+        return this.ampMotor.get();
+    }
+    
+    public void setAmpMotorSpeed(double speed) {
+        this.ampVelocityPID.setReference(speed, ControlType.kVelocity);
     }
     
 }
