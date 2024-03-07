@@ -51,6 +51,9 @@ public final class RobotMap
     public static final int INTAKE_CAN_ID = 16;
     public static final boolean INTAKE_REVERSED = false;
 
+    public static final int BEAM_BREAK_LED_DIO = 0;
+    public static final int BEAM_BREAK_SENSOR_DIO = 0;
+
   }
 
   public static final class PivotConstants {

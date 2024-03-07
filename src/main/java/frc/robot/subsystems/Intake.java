@@ -4,19 +4,27 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
 public class Intake extends SubsystemBase {
 
     CANSparkMax intakeMotor;
+    DigitalInput beamSensor;
+    DigitalOutput beam;
 
-    private final double INTAKE_MAX_SPEED = 0.5;
+    public static double INTAKE_DEF_SPEED = 0.5;
 
     public Intake() {
         this.intakeMotor = new CANSparkMax(RobotMap.IntakeConstants.INTAKE_CAN_ID, MotorType.kBrushless);
         this.intakeMotor.setInverted(RobotMap.IntakeConstants.INTAKE_REVERSED);
         this.intakeMotor.setIdleMode(IdleMode.kBrake);
+
+        this.beamSensor = new DigitalInput(RobotMap.IntakeConstants.BEAM_BREAK_SENSOR_DIO);
+        this.beam = new DigitalOutput(RobotMap.IntakeConstants.BEAM_BREAK_LED_DIO);
+        this.beam.set(true);
     }
 
     public CANSparkMax getMotor() {
@@ -31,14 +39,19 @@ public class Intake extends SubsystemBase {
         return this.intakeMotor.get();
     }
 
-    public void setIntake(boolean intake, boolean outtake) {
+    public void setIntakeBoolean(boolean intake, boolean outtake) {
         if (intake && !outtake) {
-            this.setSpeed(INTAKE_MAX_SPEED);
+            this.setSpeed(Intake.INTAKE_DEF_SPEED);
         } else if (!intake && outtake) {
-            this.setSpeed(-INTAKE_MAX_SPEED);
+            this.setSpeed(-Intake.INTAKE_DEF_SPEED);
         } else {
             this.setSpeed(0.0);
         }
+    }
+
+    public boolean beamBroken() {
+        return false; // TODO replace this again
+        // return beamSensor.get();
     }
     
 }

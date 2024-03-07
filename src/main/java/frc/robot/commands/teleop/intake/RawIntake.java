@@ -26,7 +26,7 @@ public class RawIntake extends Command {
     @Override
     public void execute() {
 
-        intake.setIntake(intakeControl.getAsBoolean(), outtakeControl.getAsBoolean());
+        intake.setIntakeBoolean(intakeControl.getAsBoolean(), outtakeControl.getAsBoolean());
         
     }
 

@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
+import frc.robot.commands.teleop.intake.AlwaysOnIntake;
 import frc.robot.commands.teleop.intake.RawIntake;
 import frc.robot.commands.teleop.pivot.RawPivot;
 import frc.robot.commands.teleop.shamper.RawShamp;
@@ -78,31 +79,18 @@ public class RobotContainer
         () -> driverXbox.getRightX(),
         () -> driverXbox.getRightY());
 
-    Command rawShamperTeleop = new RawShamp(
-      shamper,
-      () -> operatorXbox.getLeftY(),
-      () -> operatorXbox.getRightY(),
-      () -> operatorXbox.getAButtonPressed()
-    );
-
-    Command rawPivotTeleop = new RawPivot(
-      pivot, 
-      () -> operatorXbox.getRightTriggerAxis(), 
-      () -> operatorXbox.getLeftTriggerAxis()
-    );
-
-    Command rawIntakeTeleop = new RawIntake(
+    Command alwaysOnIntake = new AlwaysOnIntake(
       intake, 
-      () -> driverXbox.getRightBumper(), 
-      () -> driverXbox.getLeftBumper()
+      () -> driverXbox.getLeftX(), 
+      () -> driverXbox.getLeftY(), 
+      () -> operatorXbox.getLeftBumperPressed()
     );
-
+    
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngle);
 
-    CommandScheduler.getInstance().setDefaultCommand(shamper, rawShamperTeleop);
-    CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivotTeleop);
-    CommandScheduler.getInstance().setDefaultCommand(intake, rawIntakeTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
+    
   }
 
   /**
