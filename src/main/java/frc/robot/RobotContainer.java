@@ -6,25 +6,30 @@ package frc.robot;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
 import frc.robot.commands.teleop.intake.AlwaysOnIntake;
 import frc.robot.commands.teleop.intake.RawIntake;
+import frc.robot.commands.teleop.pivot.PivotTickPreset;
 import frc.robot.commands.teleop.pivot.RawPivot;
 import frc.robot.commands.teleop.shamper.RawShamp;
+import frc.robot.commands.teleop.shamper.ShootAmp;
+import frc.robot.commands.teleop.shamper.ShootSpeaker;
 import frc.robot.commands.teleop.swervedrive.AbsoluteDriveAdv;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shamper;
 import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Vision;
 
 import java.io.File;
 
@@ -42,6 +47,11 @@ public class RobotContainer
   final Shamper shamper = new Shamper(true);
   final Pivot pivot = new Pivot();
   final Intake intake = new Intake();
+
+  final Vision vision = new Vision();
+
+  // Button-related commands
+  Command shootCmd, ampAlignCmd, speakerAlignCmd, restCmd;
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   XboxController driverXbox = new XboxController(RobotMap.DriverConstants.DRIVER_ID);
@@ -85,7 +95,17 @@ public class RobotContainer
       () -> driverXbox.getLeftY(), 
       () -> operatorXbox.getLeftBumperPressed()
     );
-    
+
+    Command shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
+    Command shootAmp = new ShootAmp(shamper, intake);
+
+    // Subroutine buttons!
+    shootCmd = new ConditionalCommand(shootSpeaker, shootAmp, () -> shamper.getMode());
+    restCmd = new PivotTickPreset(pivot, () -> 0);
+    ampAlignCmd = new PivotTickPreset(pivot, () -> Pivot.AMP_ENCODER_TICKS);
+    speakerAlignCmd = new PivotTickPreset(pivot, () -> vision.getTargetEncoderTicks());
+
+    // Default Commands
     drivebase.setDefaultCommand(
         !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngle);
 
@@ -105,8 +125,13 @@ public class RobotContainer
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
+    // new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
 //    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
+
+    new JoystickButton(operatorXbox, 1).onTrue(shootCmd);
+    new JoystickButton(operatorXbox, 2).onTrue(restCmd);
+    new JoystickButton(operatorXbox, 3).onTrue(speakerAlignCmd);
+    new JoystickButton(operatorXbox, 4).onTrue(ampAlignCmd);
   }
 
   /**

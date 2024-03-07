@@ -10,7 +10,7 @@ import frc.robot.RobotMap;
 
 public class Pivot extends SubsystemBase {
     
-    private final double AMP_ENCODER_TICKS = 2048;
+    public final static double AMP_ENCODER_TICKS = 2048;
 
     private final CANSparkMax leftPivotMotor, rightPivotMotor;
     private final Encoder encoder;
