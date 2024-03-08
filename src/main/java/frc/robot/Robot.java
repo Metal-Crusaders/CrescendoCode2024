@@ -71,7 +71,7 @@ public class Robot extends TimedRobot
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putNumber("Pivot Encoder Ticks", m_robotContainer.pivot.getEncoderTicks());
-    SmartDashboard.putString("Shamper Mode", m_robotContainer.shamper.getModeString());
+    // SmartDashboard.putString("Shamper Mode", m_robotContainer.shamper.getModeString());
 
   }
 

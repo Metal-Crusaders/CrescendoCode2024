@@ -10,7 +10,7 @@ import frc.robot.RobotMap;
 
 public class Pivot extends SubsystemBase {
     
-    public final static double AMP_ENCODER_TICKS = 2048;
+    public final static double AMP_ENCODER_TICKS = 450;
 
     private final CANSparkMax leftPivotMotor, rightPivotMotor;
     private final Encoder encoder;
@@ -32,6 +32,9 @@ public class Pivot extends SubsystemBase {
     }
 
     public void setPivotSpeed(double speed) {
+        if (this.getEncoderTicks() >= AMP_ENCODER_TICKS && speed > 0) {
+            speed = 0;
+        } // check for NAN here
         leftPivotMotor.set(speed);
     }
 

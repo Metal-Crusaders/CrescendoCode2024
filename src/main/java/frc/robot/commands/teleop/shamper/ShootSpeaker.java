@@ -16,8 +16,8 @@ public class ShootSpeaker extends Command {
     private DoubleSupplier speedGetter;
     Timer revTimer, indexTimer;
 
-    private final double REV_SECONDS = 0.5;
-    private final double INDEX_SECONDS = 0.5;
+    private final double REV_SECONDS = 1;
+    private final double INDEX_SECONDS = 1;
 
     /*
      * Speed from 0 - 1
@@ -65,6 +65,11 @@ public class ShootSpeaker extends Command {
         shamper.setIndexSpeed(0);
 
         intake.setIntakeBoolean(false, false);
+
+        revTimer.stop();
+        revTimer.reset();
+        indexTimer.stop();
+        indexTimer.reset();
     }
 
     @Override

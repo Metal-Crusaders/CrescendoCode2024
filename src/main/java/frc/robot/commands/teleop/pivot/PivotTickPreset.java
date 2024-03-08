@@ -10,13 +10,13 @@ import frc.robot.subsystems.Pivot;
 
 public class PivotTickPreset extends Command {
 
-    private final double THRESHOLD = 5;
+    private final double THRESHOLD = 3;
     
     private Pivot pivot;
     private DoubleSupplier targetTickGetter;
     private double targetTicks;
 
-    private double integralSum = 0, lastError = 0, currentTicks, error, derivative, output;
+    private double integralSum = 0, lastError = 0, currentTicks, error, derivative, output = 0;
 
     private Timer timer;
 
@@ -40,14 +40,14 @@ public class PivotTickPreset extends Command {
     public void execute() {
         
         currentTicks = pivot.getEncoderTicks();
-        SmartDashboard.putNumber("Pivot Encoder Ticks", currentTicks);
-
         error = targetTicks - currentTicks;
+        SmartDashboard.putNumber("error", error);
+        SmartDashboard.putNumber("Pivot PID Output", output);
 
         // PID stuff
-        derivative = (error - lastError) / timer.get();
+        derivative = (error - lastError) / (timer.get() + 0.0001);
 
-        integralSum = integralSum + (error * timer.get());
+        integralSum = integralSum + (error * (timer.get() + 0.0001));
 
         output = (RobotMap.PivotConstants.kP * error) + 
                  (RobotMap.PivotConstants.kI * integralSum) + 

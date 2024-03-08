@@ -35,25 +35,25 @@ public class Shamper extends SubsystemBase {
         this.shooterMotor = new CANSparkMax(RobotMap.ShamperConstants.SHOOTER_CAN_ID, MotorType.kBrushless);
 
         // shooter vs. amp stuff
-        this.shooterMotor.setInverted(RobotMap.ShamperConstants.SHOOTER_MOTOR_INVERTED); // TODO fix this if needed
-        this.ampMotor.setInverted(RobotMap.ShamperConstants.AMP_MOTOR_INVERTED); // TODO fix this if needed
+        this.shooterMotor.setInverted(RobotMap.ShamperConstants.SHOOTER_MOTOR_INVERTED);
+        this.ampMotor.setInverted(RobotMap.ShamperConstants.AMP_MOTOR_INVERTED);
         this.setMode(defaultMode);
 
         // shooter velocity PID setup!
-        this.shooterVelocityPID = this.shooterMotor.getPIDController();
-        this.shooterVelocityPID.setP(RobotMap.ShamperConstants.kP);
-        this.shooterVelocityPID.setI(RobotMap.ShamperConstants.kI);
-        this.shooterVelocityPID.setD(RobotMap.ShamperConstants.kD);
-        this.shooterVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
-        this.shooterVelocityPID.setOutputRange(-1, 1);
+        // this.shooterVelocityPID = this.shooterMotor.getPIDController();
+        // this.shooterVelocityPID.setP(RobotMap.ShamperConstants.kP);
+        // this.shooterVelocityPID.setI(RobotMap.ShamperConstants.kI);
+        // this.shooterVelocityPID.setD(RobotMap.ShamperConstants.kD);
+        // this.shooterVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
+        // this.shooterVelocityPID.setOutputRange(0, 1);
 
         // velocity PID setup!
-        this.ampVelocityPID = this.ampMotor.getPIDController();
-        this.ampVelocityPID.setP(RobotMap.ShamperConstants.kP);
-        this.ampVelocityPID.setI(RobotMap.ShamperConstants.kI);
-        this.ampVelocityPID.setD(RobotMap.ShamperConstants.kD);
-        this.ampVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
-        this.ampVelocityPID.setOutputRange(-1, 1);
+        // this.ampVelocityPID = this.ampMotor.getPIDController();
+        // this.ampVelocityPID.setP(RobotMap.ShamperConstants.kP);
+        // this.ampVelocityPID.setI(RobotMap.ShamperConstants.kI);
+        // this.ampVelocityPID.setD(RobotMap.ShamperConstants.kD);
+        // this.ampVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
+        // this.ampVelocityPID.setOutputRange(0, 1);
     }
 
     /*
@@ -90,7 +90,8 @@ public class Shamper extends SubsystemBase {
     }
     
     public void setShooterMotorSpeed(double speed) {
-        this.shooterVelocityPID.setReference(speed, ControlType.kVelocity);
+        // this.shooterVelocityPID.setReference(speed, ControlType.kVelocity);
+        this.shooterMotor.set(speed);
     }
 
     public double getCurrentAmpMotorSpeed() {
@@ -98,7 +99,8 @@ public class Shamper extends SubsystemBase {
     }
     
     public void setAmpMotorSpeed(double speed) {
-        this.ampVelocityPID.setReference(speed, ControlType.kVelocity);
+        // this.ampVelocityPID.setReference(speed, ControlType.kVelocity);
+        this.ampMotor.set(speed);
     }
     
 }

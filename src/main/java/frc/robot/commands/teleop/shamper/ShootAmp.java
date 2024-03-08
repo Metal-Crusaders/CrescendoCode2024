@@ -11,8 +11,8 @@ public class ShootAmp extends Command { // TODO CHANGE SPEEDS HERE
     private Intake intake;
     Timer revTimer, indexTimer;
 
-    private final double REV_SECONDS = 0.5;
-    private final double INDEX_SECONDS = 0.5;
+    private final double REV_SECONDS = 2;
+    private final double INDEX_SECONDS = 1;
 
     public ShootAmp(Shamper shamper, Intake intake) {
         this.shamper = shamper;
@@ -29,7 +29,7 @@ public class ShootAmp extends Command { // TODO CHANGE SPEEDS HERE
     public void initialize() {
         revTimer.start();
 
-        shamper.setAmpMotorSpeed(-0.5);
+        shamper.setAmpMotorSpeed(-0.75);
         shamper.setShooterMotorSpeed(0);
         shamper.setIndexSpeed(0);
         
@@ -52,6 +52,10 @@ public class ShootAmp extends Command { // TODO CHANGE SPEEDS HERE
         shamper.setAmpMotorSpeed(0);
         shamper.setIndexSpeed(0);
         intake.setIntakeBoolean(false, false);
+        revTimer.stop();
+        revTimer.reset();
+        indexTimer.stop();
+        indexTimer.reset();
     }
 
     @Override

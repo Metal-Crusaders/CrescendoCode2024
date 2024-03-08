@@ -36,23 +36,21 @@ public final class RobotMap
     public static final int SHOOTER_CAN_ID = 15;
 
     public static final boolean SHOOTER_MOTOR_INVERTED = false;
-    public static final boolean AMP_MOTOR_INVERTED = true;
+    public static final boolean AMP_MOTOR_INVERTED = false;
 
     public static final double kP = 1;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
-    public static final double kFF = 0.00017;
-
-    public static final double MAX_RPM = 5676;
+    public static final double kFF = 0.0;
   }
 
   public static final class IntakeConstants {
 
     public static final int INTAKE_CAN_ID = 16;
-    public static final boolean INTAKE_REVERSED = false;
+    public static final boolean INTAKE_REVERSED = true;
 
-    public static final int BEAM_BREAK_LED_DIO = 0;
-    public static final int BEAM_BREAK_SENSOR_DIO = 0;
+    public static final int BEAM_BREAK_LED_DIO = 5;
+    public static final int BEAM_BREAK_SENSOR_DIO = 6;
 
   }
 
@@ -61,13 +59,13 @@ public final class RobotMap
     public static final int LEFT_PIVOT_ID = 17;
     public static final int RIGHT_PIVOT_ID = 18;
 
-    public static final boolean LEFT_PIVOT_INVERTED = false;
-    public static final boolean ENCODER_INVERTED = false;
+    public static final boolean LEFT_PIVOT_INVERTED = true;
+    public static final boolean ENCODER_INVERTED = true;
 
-    public static final int DIO_PIVOT_IN = 2;
-    public static final int DIO_PIVOT_OUT = 3;
+    public static final int DIO_PIVOT_IN = 1;
+    public static final int DIO_PIVOT_OUT = 2;
 
-    public static final double kP = 0.00033; // TODO FIGURE THIS OUT TOO
+    public static final double kP = 0.007;
     public static final double kI = 0.0;
     public static final double kD = 0.0;
   }
