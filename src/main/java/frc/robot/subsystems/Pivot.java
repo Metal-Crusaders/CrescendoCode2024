@@ -5,6 +5,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
 
@@ -26,7 +27,7 @@ public class Pivot extends SubsystemBase {
         this.leftPivotMotor.setInverted(RobotMap.PivotConstants.LEFT_PIVOT_INVERTED);
         this.rightPivotMotor.follow(leftPivotMotor, true);
 
-        this.encoder = new Encoder(RobotMap.PivotConstants.DIO_PIVOT_IN, RobotMap.PivotConstants.DIO_PIVOT_OUT);
+        this.encoder = new Encoder(RobotMap.PivotConstants.DIO_PIVOT_IN, RobotMap.PivotConstants.DIO_PIVOT_OUT, RobotMap.PivotConstants.DIO_PIVOT_ABS); // TODO test
         this.encoder.setReverseDirection(RobotMap.PivotConstants.ENCODER_INVERTED);
         this.resetEncoder();
     }
@@ -43,11 +44,20 @@ public class Pivot extends SubsystemBase {
     }
 
     public double getEncoderTicks() {
-        return encoder.getDistance();
+        return encoder.get();
+    }
+
+    public double getAbsoluteEncoderTicks() {
+        return encoder.getRaw();
     }
 
     public void resetEncoder() {
         encoder.reset();
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Raw Encoder Ticks?", this.getAbsoluteEncoderTicks());
     }
     
 }

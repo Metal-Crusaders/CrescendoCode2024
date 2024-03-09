@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMap;
 
 public class Vision extends SubsystemBase{
 
@@ -11,8 +12,8 @@ public class Vision extends SubsystemBase{
     public Vision() {
     }
 
-    public double getHorizontalOffset() {
-        return tx;
+    public double getAngularVelocity() { // basically just PID ngl, starting kP should be maxAngularVelocity / maxOffset
+        return RobotMap.DrivebaseConstants.ANGLING_kP * tx;
     }
 
     public double getTargetSpeed() {

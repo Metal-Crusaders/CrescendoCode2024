@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
+import frc.robot.commands.subroutines.AlignAmp;
+import frc.robot.commands.subroutines.AlignSpeaker;
+import frc.robot.commands.subroutines.RestMode;
 import frc.robot.commands.teleop.intake.AlwaysOnIntake;
 import frc.robot.commands.teleop.intake.RawIntake;
 import frc.robot.commands.teleop.pivot.PivotTickPreset;
@@ -44,7 +47,7 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                          "swerve"));
-  // final Shamper shamper = new Shamper(true);
+  final Shamper shamper = new Shamper(true);
   final Pivot pivot = new Pivot();
   final Intake intake = new Intake();
 
@@ -87,29 +90,33 @@ public class RobotContainer
         () -> driverXbox.getRightX(),
         () -> driverXbox.getRightY());
 
-    Command alwaysOnIntake = new AlwaysOnIntake(
+    // Command alwaysOnIntake = new AlwaysOnIntake(
+    //   intake, 
+    //   () -> driverXbox.getLeftX(), 
+    //   () -> driverXbox.getLeftY(), 
+    //   () -> operatorXbox.getLeftBumperPressed()
+    // );
+
+    Command rawIntakeTeleop = new RawIntake(
       intake, 
-      () -> driverXbox.getLeftX(), 
-      () -> driverXbox.getLeftY(), 
-      () -> operatorXbox.getLeftBumperPressed()
+      () -> driverXbox.getRightBumper(), 
+      () -> driverXbox.getLeftBumper()
     );
 
     RawPivot rawPivot = new RawPivot(pivot, () -> operatorXbox.getRightTriggerAxis(), () -> operatorXbox.getLeftTriggerAxis());
 
-    // shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
-    // shootAmp = new ShootAmp(shamper, intake);
+    shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
+    shootAmp = new ShootAmp(shamper, intake);
 
     // Subroutine buttons!
-    // shootCmd = new ConditionalCommand(shootSpeaker, shootAmp, () -> shamper.getMode());
-    restCmd = new PivotTickPreset(pivot, () -> 0);
-    ampAlignCmd = new PivotTickPreset(pivot, () -> Pivot.AMP_ENCODER_TICKS); // TODO add shamper stuff here through a parallel command group or smth?
-    speakerAlignCmd = new PivotTickPreset(pivot, () -> vision.getTargetEncoderTicks());
+    shootCmd = new ConditionalCommand(shootSpeaker, shootAmp, () -> shamper.getMode());
+    restCmd = new RestMode(pivot, shamper);
+    ampAlignCmd = new AlignAmp(pivot, shamper);
+    speakerAlignCmd = new AlignSpeaker(pivot, shamper, vision, drivebase);
 
     // Default Commands
-    drivebase.setDefaultCommand(
-        !RobotBase.isSimulation() ? driveFieldOrientedDirectAngle : driveFieldOrientedDirectAngle);
-
-    // CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
+    CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
+    CommandScheduler.getInstance().setDefaultCommand(intake, rawIntakeTeleop);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
     
     configureBindings();
@@ -128,17 +135,11 @@ public class RobotContainer
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
     new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
-    // new JoystickButton(driverXbox, 3).onTrue(new InstantCommand(drivebase::addFakeVisionReading));
-//    new JoystickButton(driverXbox, 3).whileTrue(new RepeatCommand(new InstantCommand(drivebase::lock, drivebase)));
 
-    // JoystickButton shootBtn = new JoystickButton(operatorXbox, 1);
-    // shootBtn.onTrue(shootCmd);
-    JoystickButton restBtn = new JoystickButton(operatorXbox, 2);
-    restBtn.onTrue(restCmd);
-    JoystickButton speakerBtn = new JoystickButton(operatorXbox, 3);
-    speakerBtn.onTrue(speakerAlignCmd);
-    JoystickButton ampBtn = new JoystickButton(operatorXbox, 4);
-    ampBtn.onTrue(ampAlignCmd);
+    new JoystickButton(operatorXbox, 1).onTrue(shootCmd);
+    new JoystickButton(operatorXbox, 2).onTrue(restCmd);
+    new JoystickButton(operatorXbox, 3).onTrue(speakerAlignCmd);
+    new JoystickButton(operatorXbox, 4).onTrue(ampAlignCmd);
 
     // JoystickButton shootSpeakerBtn = new JoystickButton(operatorXbox, 5);
     // shootSpeakerBtn.onTrue(shootSpeaker);

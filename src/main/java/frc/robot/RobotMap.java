@@ -27,6 +27,8 @@ public final class RobotMap
 
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
+
+    public static final double ANGLING_kP = 0; // TODO figure this out, should be the formula in Vision
   }
 
   public static final class ShamperConstants {
@@ -64,6 +66,7 @@ public final class RobotMap
 
     public static final int DIO_PIVOT_IN = 1;
     public static final int DIO_PIVOT_OUT = 2;
+    public static final int DIO_PIVOT_ABS = 0;
 
     public static final double kP = 0.007;
     public static final double kI = 0.0;
