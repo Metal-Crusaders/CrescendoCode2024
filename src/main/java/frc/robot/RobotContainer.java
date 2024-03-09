@@ -118,7 +118,6 @@ public class RobotContainer
     CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
     CommandScheduler.getInstance().setDefaultCommand(intake, rawIntakeTeleop);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
-    
     configureBindings();
 
   }
