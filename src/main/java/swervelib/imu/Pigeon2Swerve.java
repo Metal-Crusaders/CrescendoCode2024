@@ -87,7 +87,6 @@ public class Pigeon2Swerve extends SwerveIMU
   @Override
   public Rotation3d getRawRotation3d()
   {
-    // TODO: Switch to suppliers.
     StatusSignal<Double> w = imu.getQuatW();
     StatusSignal<Double> x = imu.getQuatX();
     StatusSignal<Double> y = imu.getQuatY();

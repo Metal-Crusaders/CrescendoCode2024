@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.teleop.pivot.PivotTickPreset;
+import frc.robot.commands.teleop.swervedrive.AlignToTarget;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shamper;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -17,8 +18,8 @@ public class AlignSpeaker extends SequentialCommandGroup {
 
         addCommands(
             new InstantCommand(() -> shamper.setMode(true), shamper),
-            new PivotTickPreset(pivot, () -> vision.getTargetEncoderTicks()),
-            swerve.driveCommand(() -> 0, () -> 0, () -> vision.getAngularVelocity())
+            new AlignToTarget(swerve, () -> vision.getAngularVelocity(), 0.05), // TODO validate Error Threshold
+            new PivotTickPreset(pivot, () -> vision.getTargetEncoderTicks())
         );
 
     }

@@ -24,9 +24,7 @@ public class Shamper extends SubsystemBase {
 
     CANSparkMax indexer, ampMotor, shooterMotor;
 
-    private SparkPIDController shooterVelocityPID, ampVelocityPID;
-
-    private boolean mode; // false for amp, true for speaker // TODO need to confirm this
+    private boolean mode; // false for amp, true for speaker
 
     public Shamper(boolean defaultMode) {
 
@@ -39,22 +37,6 @@ public class Shamper extends SubsystemBase {
         this.shooterMotor.setInverted(RobotMap.ShamperConstants.SHOOTER_MOTOR_INVERTED);
         this.ampMotor.setInverted(RobotMap.ShamperConstants.AMP_MOTOR_INVERTED);
         this.setMode(defaultMode);
-
-        // shooter velocity PID setup!
-        // this.shooterVelocityPID = this.shooterMotor.getPIDController();
-        // this.shooterVelocityPID.setP(RobotMap.ShamperConstants.kP);
-        // this.shooterVelocityPID.setI(RobotMap.ShamperConstants.kI);
-        // this.shooterVelocityPID.setD(RobotMap.ShamperConstants.kD);
-        // this.shooterVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
-        // this.shooterVelocityPID.setOutputRange(0, 1);
-
-        // velocity PID setup!
-        // this.ampVelocityPID = this.ampMotor.getPIDController();
-        // this.ampVelocityPID.setP(RobotMap.ShamperConstants.kP);
-        // this.ampVelocityPID.setI(RobotMap.ShamperConstants.kI);
-        // this.ampVelocityPID.setD(RobotMap.ShamperConstants.kD);
-        // this.ampVelocityPID.setFF(RobotMap.ShamperConstants.kFF);
-        // this.ampVelocityPID.setOutputRange(0, 1);
     }
 
     /*

@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shamper;
 
-public class ShootAmp extends Command { // TODO CHANGE SPEEDS HERE
+public class ShootAmp extends Command {
     
     private Shamper shamper;
     private Intake intake;

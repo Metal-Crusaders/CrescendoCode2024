@@ -121,10 +121,6 @@ public class RobotContainer
     CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
 
-    // NamedCommands.registerCommand("Intake", new InstantCommand()); // TODO INTAKE INSTANT COMMAND and all others!
-    // NamedCommands.registerCommand("AlignSpeaker", speakerAlignCmd);
-    // NamedCommands.registerCommand("ShootCmd", shootCmd);
-
     configureBindings();
   }
 
