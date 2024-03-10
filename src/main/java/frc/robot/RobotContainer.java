@@ -36,6 +36,8 @@ import frc.robot.subsystems.Vision;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
@@ -54,7 +56,7 @@ public class RobotContainer
   final Vision vision = new Vision();
 
   // Button-related commands
-  Command shootSpeaker, shootAmp, shootCmd, ampAlignCmd, speakerAlignCmd, restCmd;
+  Command shootSpeaker, shootAmp, shootCmd, ampAlignCmd, speakerAlignCmd, restCmd, testAngleVelo;
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   XboxController driverXbox = new XboxController(RobotMap.DriverConstants.DRIVER_ID);
@@ -90,18 +92,18 @@ public class RobotContainer
         () -> driverXbox.getRightX(),
         () -> driverXbox.getRightY());
 
-    // Command alwaysOnIntake = new AlwaysOnIntake(
-    //   intake, 
-    //   () -> driverXbox.getLeftX(), 
-    //   () -> driverXbox.getLeftY(), 
-    //   () -> operatorXbox.getLeftBumperPressed()
-    // );
-
-    Command rawIntakeTeleop = new RawIntake(
+    Command alwaysOnIntake = new AlwaysOnIntake(
       intake, 
-      () -> driverXbox.getRightBumper(), 
-      () -> driverXbox.getLeftBumper()
+      () -> driverXbox.getLeftX(), 
+      () -> driverXbox.getLeftY(), 
+      () -> operatorXbox.getLeftBumperPressed()
     );
+
+    // Command rawIntakeTeleop = new RawIntake(
+    //   intake, 
+    //   () -> driverXbox.getRightBumper(), 
+    //   () -> driverXbox.getLeftBumper()
+    // );
 
     RawPivot rawPivot = new RawPivot(pivot, () -> operatorXbox.getRightTriggerAxis(), () -> operatorXbox.getLeftTriggerAxis());
 
@@ -116,10 +118,14 @@ public class RobotContainer
 
     // Default Commands
     CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
-    CommandScheduler.getInstance().setDefaultCommand(intake, rawIntakeTeleop);
+    CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
-    configureBindings();
 
+    // NamedCommands.registerCommand("Intake", new InstantCommand()); // TODO INTAKE INSTANT COMMAND and all others!
+    // NamedCommands.registerCommand("AlignSpeaker", speakerAlignCmd);
+    // NamedCommands.registerCommand("ShootCmd", shootCmd);
+
+    configureBindings();
   }
 
   /**

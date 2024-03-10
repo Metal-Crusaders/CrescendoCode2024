@@ -29,7 +29,7 @@ public class ShootAmp extends Command { // TODO CHANGE SPEEDS HERE
     public void initialize() {
         revTimer.start();
 
-        shamper.setAmpMotorSpeed(-0.75);
+        shamper.setAmpMotorSpeed(0.95);
         shamper.setShooterMotorSpeed(0);
         shamper.setIndexSpeed(0);
         

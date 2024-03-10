@@ -10,7 +10,7 @@ import frc.robot.subsystems.Pivot;
 
 public class PivotTickPreset extends Command {
 
-    private final double THRESHOLD = 3;
+    private final double THRESHOLD = 0.01;
     
     private Pivot pivot;
     private DoubleSupplier targetTickGetter;
@@ -41,6 +41,7 @@ public class PivotTickPreset extends Command {
         
         currentTicks = pivot.getEncoderTicks();
         error = targetTicks - currentTicks;
+        SmartDashboard.putNumber("Current Encoder Ticks", currentTicks);
         SmartDashboard.putNumber("error", error);
         SmartDashboard.putNumber("Pivot PID Output", output);
 

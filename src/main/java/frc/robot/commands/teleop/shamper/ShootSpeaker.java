@@ -3,6 +3,7 @@ package frc.robot.commands.teleop.shamper;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shamper;
@@ -49,6 +50,10 @@ public class ShootSpeaker extends Command {
 
     @Override
     public void execute() {
+
+        SmartDashboard.putNumber("Amp Motor Speed", shamper.getCurrentAmpMotorSpeed());
+        SmartDashboard.putNumber("Speaker Motor Speed", shamper.getCurrentShooterMotorSpeed());
+
 
         if (revTimer.hasElapsed(REV_SECONDS)) {
             indexTimer.start();

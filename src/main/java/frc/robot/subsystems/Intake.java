@@ -49,9 +49,9 @@ public class Intake extends SubsystemBase {
         }
     }
 
-    public boolean beamBroken() {
-        return false; // TODO replace this again
-        // return beamSensor.get();
+    public boolean beamExists() {
+        // return false; // TODO replace this again
+        return beamSensor.get();
     }
     
 }
