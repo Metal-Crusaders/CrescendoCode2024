@@ -28,7 +28,7 @@ public final class RobotMap
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
 
-    public static final double ANGLING_kP = 1.0 / 25.0; // TODO figure this out, should be starting kP should be maxAngularVelocity (try 3.0) / maxOffset
+    public static final double ANGLING_kP = 8.0 / 25.0; // TODO figure this out, should be starting kP should be maxAngularVelocity (try 3.0) / maxOffset
   }
 
   public static final class ShamperConstants {

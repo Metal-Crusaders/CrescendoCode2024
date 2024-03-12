@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -20,9 +21,9 @@ import frc.robot.RobotMap;
  */
 public class Shamper extends SubsystemBase {
 
-    public static double INDEX_SPEED = 0.75;
+    public static double INDEX_SPEED = 0.5;
 
-    CANSparkMax indexer, ampMotor, shooterMotor;
+    public CANSparkMax indexer, ampMotor, shooterMotor;
 
     private boolean mode; // false for amp, true for speaker
 
@@ -32,6 +33,9 @@ public class Shamper extends SubsystemBase {
         this.indexer = new CANSparkMax(RobotMap.ShamperConstants.INDEXER_CAN_ID, MotorType.kBrushless);
         this.ampMotor = new CANSparkMax(RobotMap.ShamperConstants.AMP_CAN_ID, MotorType.kBrushless);
         this.shooterMotor = new CANSparkMax(RobotMap.ShamperConstants.SHOOTER_CAN_ID, MotorType.kBrushless);
+
+        this.ampMotor.setIdleMode(IdleMode.kBrake);
+        this.shooterMotor.setIdleMode(IdleMode.kBrake);
 
         // shooter vs. amp stuff
         this.shooterMotor.setInverted(RobotMap.ShamperConstants.SHOOTER_MOTOR_INVERTED);
@@ -73,7 +77,6 @@ public class Shamper extends SubsystemBase {
     }
     
     public void setShooterMotorSpeed(double speed) {
-        // this.shooterVelocityPID.setReference(speed, ControlType.kVelocity);
         this.shooterMotor.set(speed);
     }
 
@@ -82,7 +85,6 @@ public class Shamper extends SubsystemBase {
     }
     
     public void setAmpMotorSpeed(double speed) {
-        // this.ampVelocityPID.setReference(speed, ControlType.kVelocity);
         this.ampMotor.set(speed);
     }
 

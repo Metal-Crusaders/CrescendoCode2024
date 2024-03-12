@@ -16,6 +16,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,7 +43,10 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public        double      maximumSpeed = Units.feetToMeters(8);
+  public        double      maximumSpeed = Units.feetToMeters(100);
+
+  NetworkTableEntry v_limeLightX;
+
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -75,8 +80,11 @@ public class SwerveSubsystem extends SubsystemBase
     {
       throw new RuntimeException(e);
     }
-    swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
-    // swerveDrive.setMaximumSpeeds(5, 5, 5);
+    swerveDrive.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
+    // swerveDrive.setMaximumSpeeds(8, 8, 8);
+    swerveDrive.getGyro().setInverted(false);
+    swerveDrive.setCosineCompensator(false);    
+    v_limeLightX = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx");
     setupPathPlanner();
   }
 
@@ -451,5 +459,18 @@ public class SwerveSubsystem extends SubsystemBase
   public void addFakeVisionReading()
   {
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
+  }
+
+  public Command aimAtTarget()
+  {
+    return run(() -> {
+      //if (result.hasTargets()){
+        drive(getTargetSpeeds(0,0,Rotation2d.fromDegrees(getVisionAngle())));
+      //}
+    });
+  }
+
+  public double getVisionAngle(){
+    return -1 * v_limeLightX.getDouble(0.0);
   }
 }

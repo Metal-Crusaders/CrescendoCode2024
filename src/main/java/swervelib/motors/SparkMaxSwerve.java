@@ -43,6 +43,14 @@ public class SparkMaxSwerve extends SwerveMotor
    * Factory default already occurred.
    */
   private boolean               factoryDefaultOccurred = false;
+  /**
+   * Supplier for the velocity of the motor controller.
+   */
+  private Supplier<Double>      velocity;
+  /**
+   * Supplier for the position of the motor controller.
+   */
+  private Supplier<Double>      position;
 
   /**
    * Initialize the swerve motor.
@@ -62,6 +70,8 @@ public class SparkMaxSwerve extends SwerveMotor
     pid.setFeedbackDevice(
         encoder); // Configure feedback of the PID controller as the integrated encoder.
 
+    velocity = encoder::getVelocity;
+    position = encoder::getPosition;
     // Spin off configurations in a different thread.
     // configureSparkMax(() -> motor.setCANTimeout(0)); // Commented out because it prevents feedback.
   }
@@ -190,6 +200,8 @@ public class SparkMaxSwerve extends SwerveMotor
           false);
       absoluteEncoder = encoder;
       configureSparkMax(() -> pid.setFeedbackDevice((MotorFeedbackSensor) absoluteEncoder.getAbsoluteEncoder()));
+      velocity = absoluteEncoder::getVelocity;
+      position = absoluteEncoder::getAbsolutePosition;
     }
     return this;
   }
@@ -393,6 +405,39 @@ public class SparkMaxSwerve extends SwerveMotor
   }
 
   /**
+   * Get the voltage output of the motor controller.
+   *
+   * @return Voltage output.
+   */
+  @Override
+  public double getVoltage()
+  {
+    return motor.getAppliedOutput() * motor.getBusVoltage();
+  }
+
+  /**
+   * Set the voltage of the motor.
+   *
+   * @param voltage Voltage to set.
+   */
+  @Override
+  public void setVoltage(double voltage)
+  {
+    motor.setVoltage(voltage);
+  }
+
+  /**
+   * Get the applied dutycycle output.
+   *
+   * @return Applied dutycycle output to the motor.
+   */
+  @Override
+  public double getAppliedOutput()
+  {
+    return motor.getAppliedOutput();
+  }
+
+  /**
    * Get the velocity of the integrated encoder.
    *
    * @return velocity
@@ -400,7 +445,7 @@ public class SparkMaxSwerve extends SwerveMotor
   @Override
   public double getVelocity()
   {
-    return absoluteEncoder == null ? encoder.getVelocity() : absoluteEncoder.getVelocity();
+    return velocity.get();
   }
 
   /**
@@ -411,7 +456,7 @@ public class SparkMaxSwerve extends SwerveMotor
   @Override
   public double getPosition()
   {
-    return absoluteEncoder == null ? encoder.getPosition() : absoluteEncoder.getAbsolutePosition();
+    return position.get();
   }
 
   /**

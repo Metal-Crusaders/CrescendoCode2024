@@ -11,8 +11,8 @@ public class ShootAmp extends Command {
     private Intake intake;
     Timer revTimer, indexTimer;
 
-    private final double REV_SECONDS = 2;
-    private final double INDEX_SECONDS = 1;
+    private final double REV_SECONDS = 2.5;
+    private final double INDEX_SECONDS = 1.5;
 
     public ShootAmp(Shamper shamper, Intake intake) {
         this.shamper = shamper;
@@ -38,6 +38,7 @@ public class ShootAmp extends Command {
 
     @Override
     public void execute() {
+        shamper.setAmpMotorSpeed(0.95);
 
         if (revTimer.hasElapsed(REV_SECONDS)) {
             indexTimer.start();

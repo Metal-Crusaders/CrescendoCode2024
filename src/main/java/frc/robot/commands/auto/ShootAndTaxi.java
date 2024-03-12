@@ -27,11 +27,14 @@ public class ShootAndTaxi extends SequentialCommandGroup {
         Vision vision
     ) {
 
-        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve);
+        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
         ShootSpeaker shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
         RestMode restMode = new RestMode(pivot, shamper);
         IntakeXSeconds intake3Seconds = new IntakeXSeconds(intake, 3);
         Command autoPath = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ShootAndTaxiPath"));
+        AlignSpeaker alignSpeaker2 = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
+        ShootSpeaker shootSpeaker2 = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
+        RestMode restMode2 = new RestMode(pivot, shamper);
 
         addRequirements(
             swerve,
@@ -49,9 +52,9 @@ public class ShootAndTaxi extends SequentialCommandGroup {
                 intake3Seconds,
                 autoPath
             ),
-            alignSpeaker,
-            shootSpeaker,
-            restMode
+            alignSpeaker2,
+            shootSpeaker2,
+            restMode2
         );
 
     }

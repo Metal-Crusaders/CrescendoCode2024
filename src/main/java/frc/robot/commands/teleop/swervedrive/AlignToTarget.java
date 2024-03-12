@@ -46,14 +46,14 @@ public class AlignToTarget extends Command {
     @Override
     public void end(boolean interrupted) {
 
-        swerve.drive(dontTranslate, 0, true);
-        CommandScheduler.getInstance().schedule(swerve.driveCommand(() -> 0, () -> 0, () -> swerve.getHeading().getSin(), () -> swerve.getHeading().getSin()));
-        // TODO Validate: is the above necessary?
+        // swerve.drive(dontTranslate, 0, true);
+        // CommandScheduler.getInstance().schedule(swerve.driveCommand(() -> 0, () -> 0, () -> swerve.getHeading().getSin(), () -> swerve.getHeading().getSin()));
+        // TODO Validate: is the above necessary? ALSO VALIDATE SINE AND COSINE
     }
 
     @Override
     public boolean isFinished() {
-        return angularVelocity < ERROR_THRESHOLD;
+        return Math.abs(angularVelocity) < ERROR_THRESHOLD;
     }
     
 }

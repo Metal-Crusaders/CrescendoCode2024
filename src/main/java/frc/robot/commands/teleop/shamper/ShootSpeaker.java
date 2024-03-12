@@ -17,7 +17,7 @@ public class ShootSpeaker extends Command {
     private DoubleSupplier speedGetter;
     Timer revTimer, indexTimer;
 
-    private final double REV_SECONDS = 1;
+    private final double REV_SECONDS = 3;
     private final double INDEX_SECONDS = 1;
 
     /*
@@ -51,12 +51,11 @@ public class ShootSpeaker extends Command {
     @Override
     public void execute() {
 
-        SmartDashboard.putNumber("Amp Motor Speed", shamper.getCurrentAmpMotorSpeed());
-        SmartDashboard.putNumber("Speaker Motor Speed", shamper.getCurrentShooterMotorSpeed());
-
-
         if (revTimer.hasElapsed(REV_SECONDS)) {
             indexTimer.start();
+            shamper.setAmpMotorSpeed(shamperSpeed);
+            shamper.setShooterMotorSpeed(shamperSpeed);
+            
             shamper.setIndexSpeed(Shamper.INDEX_SPEED);
             intake.setIntakeBoolean(true, false);
         }

@@ -7,13 +7,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Pivot;
 
 public class RawPivot extends Command {
-
-    public double deadband(double percent, double deadbandWidth) {
-        if (-deadbandWidth <= percent && percent <= deadbandWidth) {
-            return 0;
-        }
-        return percent;
-    }
     
     private Pivot pivot;
     private DoubleSupplier pivotUpControl, pivotDownControl;
@@ -49,6 +42,13 @@ public class RawPivot extends Command {
     @Override
     public boolean isFinished() {
         return false;
+    }
+
+    public double deadband(double percent, double deadbandWidth) {
+        if (-deadbandWidth <= percent && percent <= deadbandWidth) {
+            return 0;
+        }
+        return percent;
     }
     
 }

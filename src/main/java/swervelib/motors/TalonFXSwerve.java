@@ -18,6 +18,10 @@ public class TalonFXSwerve extends SwerveMotor
 {
 
   /**
+   * Wait time for status frames to show up.
+   */
+  public static double             STATUS_TIMEOUT_SECONDS  = 0.02;
+  /**
    * Factory default already occurred.
    */
   private final boolean            factoryDefaultOccurred  = false;
@@ -34,17 +38,18 @@ public class TalonFXSwerve extends SwerveMotor
    */
   private final VelocityVoltage    m_velocityVoltageSetter = new VelocityVoltage(0);
   /**
-   * Conversion factor for the motor.
-   */
-  private       double             conversionFactor;
-  /**
    * TalonFX motor controller.
    */
   TalonFX motor;
   /**
+   * Conversion factor for the motor.
+   */
+  private double               conversionFactor;
+  /**
    * Current TalonFX configuration.
    */
   private TalonFXConfiguration configuration = new TalonFXConfiguration();
+
 
   /**
    * Constructor for TalonFX swerve motor.
@@ -228,6 +233,7 @@ public class TalonFXSwerve extends SwerveMotor
     //    motor.setStatusFramePeriod(StatusFrameEnhanced.Status_Brushless_Current,
     // CANStatusCurrent);
 
+    // TODO: Configure Status Frame 2 thru 21 if necessary
     // https://v5.docs.ctr-electronics.com/en/stable/ch18_CommonAPI.html#setting-status-frame-periods
   }
 
@@ -340,6 +346,39 @@ public class TalonFXSwerve extends SwerveMotor
     {
       motor.setControl(m_angleVoltageSetter.withPosition(setpoint / 360.0));
     }
+  }
+
+  /**
+   * Get the voltage output of the motor controller.
+   *
+   * @return Voltage output.
+   */
+  @Override
+  public double getVoltage()
+  {
+    return motor.getMotorVoltage().waitForUpdate(STATUS_TIMEOUT_SECONDS).getValue();
+  }
+
+  /**
+   * Set the voltage of the motor.
+   *
+   * @param voltage Voltage to set.
+   */
+  @Override
+  public void setVoltage(double voltage)
+  {
+    motor.setVoltage(voltage);
+  }
+
+  /**
+   * Get the applied dutycycle output.
+   *
+   * @return Applied dutycycle output to the motor.
+   */
+  @Override
+  public double getAppliedOutput()
+  {
+    return motor.getDutyCycle().waitForUpdate(STATUS_TIMEOUT_SECONDS).getValue();
   }
 
   /**

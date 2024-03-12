@@ -68,6 +68,17 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor
   public SparkMaxBrushedMotorSwerve(CANSparkMax motor, boolean isDriveMotor, Type encoderType, int countsPerRevolution,
                                     boolean useDataPortQuadEncoder)
   {
+
+    noEncoderAlert = new Alert("Motors",
+                               "Cannot use motor without encoder.",
+                               Alert.AlertType.ERROR_TRACE);
+    failureConfiguringAlert = new Alert("Motors",
+                                        "Failure configuring motor " + motor.getDeviceId(),
+                                        Alert.AlertType.WARNING_TRACE);
+    noEncoderDefinedAlert = new Alert("Motors",
+                                      "An encoder MUST be defined to work with a SparkMAX",
+                                      Alert.AlertType.ERROR_TRACE);
+
     // Drive motors **MUST** have an encoder attached.
     if (isDriveMotor && encoderType == Type.kNoSensor)
     {
@@ -103,15 +114,6 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor
     // Spin off configurations in a different thread.
     // configureSparkMax(() -> motor.setCANTimeout(0)); // Commented it out because it prevents feedback.
 
-    noEncoderAlert = new Alert("Motors",
-                               "Cannot use motor without encoder.",
-                               Alert.AlertType.ERROR_TRACE);
-    failureConfiguringAlert = new Alert("Motors",
-                                        "Failure configuring motor " + motor.getDeviceId(),
-                                        Alert.AlertType.WARNING_TRACE);
-    noEncoderDefinedAlert = new Alert("Motors",
-                                      "An encoder MUST be defined to work with a SparkMAX",
-                                      Alert.AlertType.ERROR_TRACE);
   }
 
   /**
@@ -322,6 +324,7 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor
     configureSparkMax(() -> motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, CANStatus2));
     configureSparkMax(() -> motor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, CANStatus3));
     configureSparkMax(() -> motor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, CANStatus4));
+    // TODO: Configure Status Frame 5 and 6 if necessary
     //  https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
   }
 
@@ -399,6 +402,39 @@ public class SparkMaxBrushedMotorSwerve extends SwerveMotor
   public void setReference(double setpoint, double feedforward, double position)
   {
     setReference(setpoint, feedforward);
+  }
+
+  /**
+   * Get the voltage output of the motor controller.
+   *
+   * @return Voltage output.
+   */
+  @Override
+  public double getVoltage()
+  {
+    return motor.getAppliedOutput() * motor.getBusVoltage();
+  }
+
+  /**
+   * Set the voltage of the motor.
+   *
+   * @param voltage Voltage to set.
+   */
+  @Override
+  public void setVoltage(double voltage)
+  {
+    motor.setVoltage(voltage);
+  }
+
+  /**
+   * Get the applied dutycycle output.
+   *
+   * @return Applied dutycycle output to the motor.
+   */
+  @Override
+  public double getAppliedOutput()
+  {
+    return motor.getAppliedOutput();
   }
 
   /**

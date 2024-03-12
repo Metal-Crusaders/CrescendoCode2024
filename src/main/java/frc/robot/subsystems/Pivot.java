@@ -13,7 +13,10 @@ import frc.robot.RobotMap;
 public class Pivot extends SubsystemBase {
     
     public final static double MIN_ENCODER_TICKS = 0.06;
-    public final static double AMP_ENCODER_TICKS = 0.26;
+    public final static double AMP_ENCODER_TICKS = 0.27;
+
+        private double TICKS_TO_DEGREES = 425.0;
+        private double MAX_HOLD_PERCENT = 0.025;
 
     private final CANSparkMax leftPivotMotor, rightPivotMotor;
     private final DutyCycleEncoder encoder;
@@ -39,6 +42,9 @@ public class Pivot extends SubsystemBase {
         }
         if (this.getEncoderTicks() < MIN_ENCODER_TICKS && speed < 0) {
             speed = 0;
+        }
+        if (speed == 0) {
+            speed = Math.cos(TICKS_TO_DEGREES * this.getEncoderTicks()) * MAX_HOLD_PERCENT;
         }
         leftPivotMotor.set(speed);
     }

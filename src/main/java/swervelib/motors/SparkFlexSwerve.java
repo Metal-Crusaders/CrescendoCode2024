@@ -302,6 +302,7 @@ public class SparkFlexSwerve extends SwerveMotor
     configureSparkFlex(() -> motor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, CANStatus2));
     configureSparkFlex(() -> motor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, CANStatus3));
     configureSparkFlex(() -> motor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, CANStatus4));
+    // TODO: Configure Status Frame 5 and 6 if necessary
     //  https://docs.revrobotics.com/sparkmax/operating-modes/control-interfaces
   }
 
@@ -401,6 +402,39 @@ public class SparkFlexSwerve extends SwerveMotor
   public void setReference(double setpoint, double feedforward, double position)
   {
     setReference(setpoint, feedforward);
+  }
+
+  /**
+   * Get the voltage output of the motor controller.
+   *
+   * @return Voltage output.
+   */
+  @Override
+  public double getVoltage()
+  {
+    return motor.getAppliedOutput() * motor.getBusVoltage();
+  }
+
+  /**
+   * Set the voltage of the motor.
+   *
+   * @param voltage Voltage to set.
+   */
+  @Override
+  public void setVoltage(double voltage)
+  {
+    motor.setVoltage(voltage);
+  }
+
+  /**
+   * Get the applied dutycycle output.
+   *
+   * @return Applied dutycycle output to the motor.
+   */
+  @Override
+  public double getAppliedOutput()
+  {
+    return motor.getAppliedOutput();
   }
 
   /**

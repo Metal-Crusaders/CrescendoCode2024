@@ -10,36 +10,39 @@ import frc.robot.RobotMap;
 public class Vision extends SubsystemBase{
 
     double tv, tx, ty, ta;
-    double selectedSpeed = 0.75;
-    SendableChooser<Double> speedChooser;
+    double selectedAngle = 0.06;
+    SendableChooser<Double> angleChooser;
 
     public Vision() {
 
-        this.speedChooser = new SendableChooser<>();
-        for (int i = 6; i < 20; i++) {
-            double value = Math.round(i * 0.05 * 100.0) / 100.0;
-            this.speedChooser.addOption(Double.toString(value), value);
+        this.angleChooser = new SendableChooser<>();
+        for (double i = 0.06; i < 0.16; i += 0.01) {
+            this.angleChooser.addOption(Double.toString(i), i);
         }
 
-        this.speedChooser.setDefaultOption("0.5", 0.5);
+        this.angleChooser.setDefaultOption("0.06", 0.06);
 
-        SmartDashboard.putData("Speed Selector", speedChooser);
+        SmartDashboard.putData("Speed Selector", angleChooser);
 
     }
 
     public double getAngularVelocity() {
-        // double velo = RobotMap.DrivebaseConstants.ANGLING_kP * tx * -1;
-        double velo = 0;
+        double velo = RobotMap.DrivebaseConstants.ANGLING_kP * tx * -1;
+        // double velo = 0;
         SmartDashboard.putNumber("Angular Velocity", velo);
         return velo;
     }
 
     public double getTargetSpeed() {
-        return selectedSpeed;
+        // if (tv == 0)
+        //     return 0.3;
+        return 1;
     }
 
     public double getTargetEncoderTicks() {
-        return 0.10;
+        // if (tv == 0)
+        //     return 0.0;
+        return selectedAngle;
     }
 
     @Override
@@ -55,7 +58,7 @@ public class Vision extends SubsystemBase{
         SmartDashboard.putNumber("Limelight Target Vertical Offset", ty);
         SmartDashboard.putNumber("Limelight Target Area", ta);
 
-        selectedSpeed = speedChooser.getSelected();
+        selectedAngle = angleChooser.getSelected();
             
     }
     

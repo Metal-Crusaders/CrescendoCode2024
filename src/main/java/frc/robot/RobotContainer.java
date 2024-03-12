@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
+import frc.robot.commands.auto.ShootAndTaxi;
 import frc.robot.commands.subroutines.AlignAmp;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.RestMode;
@@ -96,8 +97,11 @@ public class RobotContainer
       intake, 
       () -> driverXbox.getLeftX(), 
       () -> driverXbox.getLeftY(), 
-      () -> operatorXbox.getLeftBumperPressed()
+      () -> driverXbox.getLeftBumperPressed(),
+      driverXbox
     );
+
+    Command rawShamper = new RawShamp(shamper, () -> operatorXbox.getRightY());
 
     // Command rawIntakeTeleop = new RawIntake(
     //   intake, 
@@ -114,12 +118,13 @@ public class RobotContainer
     shootCmd = new ConditionalCommand(shootSpeaker, shootAmp, () -> shamper.getMode());
     restCmd = new RestMode(pivot, shamper);
     ampAlignCmd = new AlignAmp(pivot, shamper);
-    speakerAlignCmd = new AlignSpeaker(pivot, shamper, vision, drivebase);
+    speakerAlignCmd = new AlignSpeaker(pivot, shamper, vision, drivebase, intake);
 
     // Default Commands
     CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
     CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
+    CommandScheduler.getInstance().setDefaultCommand(shamper, rawShamper);
 
     configureBindings();
   }
@@ -156,7 +161,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("New Path", true);
+    return new ShootAndTaxi(drivebase, intake, pivot, shamper, vision);
   }
 
   public void setDriveMode()

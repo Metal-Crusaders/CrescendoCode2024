@@ -10,7 +10,7 @@ import frc.robot.subsystems.Pivot;
 
 public class PivotTickPreset extends Command {
 
-    private final double THRESHOLD = 0.01;
+    private final double THRESHOLD = 0.005;
     
     private Pivot pivot;
     private DoubleSupplier targetTickGetter;
