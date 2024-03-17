@@ -18,13 +18,9 @@ public class RawShamp extends Command {
     private Shamper shamper;
     private DoubleSupplier indexControl;
 
-    private boolean modeToggle;
-
     public RawShamp(Shamper shamper, DoubleSupplier indexControl) {
         this.shamper = shamper;
         this.indexControl = indexControl;
-
-        modeToggle = true;
 
         addRequirements(this.shamper);
     }
@@ -33,7 +29,6 @@ public class RawShamp extends Command {
     public void initialize() {
         shamper.setIndexSpeed(0);
         // shamper.setShooterMotorSpeed(0);
-        shamper.setMode(modeToggle);
     }
 
     @Override
@@ -49,7 +44,6 @@ public class RawShamp extends Command {
     public void end(boolean interrupted) {
         shamper.setIndexSpeed(0);
         // shamper.setShooterMotorSpeed(0);
-        shamper.setMode(true);
     }
 
     @Override

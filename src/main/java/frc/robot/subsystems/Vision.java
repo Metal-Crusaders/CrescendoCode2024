@@ -13,16 +13,18 @@ public class Vision extends SubsystemBase{
     double selectedAngle = 0.06;
     SendableChooser<Double> angleChooser;
 
+    // Working Velocity and Angle: 0.95 at 0.16 ticks
+
     public Vision() {
 
-        this.angleChooser = new SendableChooser<>();
-        for (double i = 0.06; i < 0.16; i += 0.01) {
-            this.angleChooser.addOption(Double.toString(i), i);
-        }
+        // this.angleChooser = new SendableChooser<>();
+        // for (double i = 0.06; i < 0.16; i += 0.01) {
+        //     this.angleChooser.addOption(Double.toString(i), i);
+        // }
 
-        this.angleChooser.setDefaultOption("0.06", 0.06);
+        // this.angleChooser.setDefaultOption("0.06", 0.06);
 
-        SmartDashboard.putData("Speed Selector", angleChooser);
+        // SmartDashboard.putData("Speed Selector", angleChooser);
 
     }
 
@@ -39,10 +41,11 @@ public class Vision extends SubsystemBase{
         return 1;
     }
 
+    
     public double getTargetEncoderTicks() {
         // if (tv == 0)
         //     return 0.0;
-        return selectedAngle;
+        return 0.20;
     }
 
     @Override
@@ -58,7 +61,7 @@ public class Vision extends SubsystemBase{
         SmartDashboard.putNumber("Limelight Target Vertical Offset", ty);
         SmartDashboard.putNumber("Limelight Target Area", ta);
 
-        selectedAngle = angleChooser.getSelected();
+        // selectedAngle = angleChooser.getSelected();
             
     }
     

@@ -9,17 +9,23 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
-import frc.robot.commands.auto.ShootAndTaxi;
+import frc.robot.commands.auto.TwoAndTaxi;
+import frc.robot.commands.auto.ShootOnly;
+import frc.robot.commands.auto.ShootTaxi;
 import frc.robot.commands.subroutines.AlignAmp;
 import frc.robot.commands.subroutines.AlignSpeaker;
+import frc.robot.commands.subroutines.IntakeSource;
 import frc.robot.commands.subroutines.RestMode;
 import frc.robot.commands.teleop.intake.AlwaysOnIntake;
 import frc.robot.commands.teleop.intake.RawIntake;
@@ -29,6 +35,7 @@ import frc.robot.commands.teleop.shamper.RawShamp;
 import frc.robot.commands.teleop.shamper.ShootAmp;
 import frc.robot.commands.teleop.shamper.ShootSpeaker;
 import frc.robot.commands.teleop.swervedrive.AbsoluteDriveAdv;
+import frc.robot.commands.teleop.swervedrive.RawTurnAuto;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shamper;
@@ -36,6 +43,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 
 import java.io.File;
+import java.util.concurrent.locks.Condition;
 
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -57,11 +65,12 @@ public class RobotContainer
   final Vision vision = new Vision();
 
   // Button-related commands
-  Command shootSpeaker, shootAmp, shootCmd, ampAlignCmd, speakerAlignCmd, restCmd, testAngleVelo;
+  Command shootSpeaker, shootAmp, shootCmd, ampAlignCmd, speakerAlignCmd, restCmd, intakeSourceCmd;
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   XboxController driverXbox = new XboxController(RobotMap.DriverConstants.DRIVER_ID);
   XboxController operatorXbox = new XboxController(RobotMap.OperatorConstants.OPERATOR_ID);
+  SendableChooser<Command> autoSelector;
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -111,14 +120,15 @@ public class RobotContainer
 
     RawPivot rawPivot = new RawPivot(pivot, () -> operatorXbox.getRightTriggerAxis(), () -> operatorXbox.getLeftTriggerAxis());
 
-    shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
     shootAmp = new ShootAmp(shamper, intake);
+    shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
 
     // Subroutine buttons!
     shootCmd = new ConditionalCommand(shootSpeaker, shootAmp, () -> shamper.getMode());
     restCmd = new RestMode(pivot, shamper);
     ampAlignCmd = new AlignAmp(pivot, shamper);
     speakerAlignCmd = new AlignSpeaker(pivot, shamper, vision, drivebase, intake);
+    intakeSourceCmd = new IntakeSource(pivot, shamper, vision, drivebase, intake);
 
     // Default Commands
     CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
@@ -127,6 +137,19 @@ public class RobotContainer
     CommandScheduler.getInstance().setDefaultCommand(shamper, rawShamper);
 
     configureBindings();
+
+    Command shootOnly = new ShootOnly(drivebase, intake, pivot, shamper, vision);
+
+    autoSelector = new SendableChooser<>();
+    autoSelector.addOption("Shoot Only", shootOnly);
+    autoSelector.addOption("Shoot and Taxi", new ShootTaxi(drivebase, intake, pivot, shamper, vision));
+    autoSelector.addOption("Do Nothing", null);
+    autoSelector.addOption("Two Note and Taxi", new TwoAndTaxi(drivebase, intake, pivot, shamper, vision));
+    autoSelector.addOption("Turn Test", new RawTurnAuto(drivebase, 3, 1)); // TODO FIGURE THIS OUT!
+
+    autoSelector.setDefaultOption("Do Nothing", null);
+    
+    SmartDashboard.putData(autoSelector);
   }
 
   /**
@@ -146,6 +169,8 @@ public class RobotContainer
     new JoystickButton(operatorXbox, 2).onTrue(restCmd);
     new JoystickButton(operatorXbox, 3).onTrue(speakerAlignCmd);
     new JoystickButton(operatorXbox, 4).onTrue(ampAlignCmd);
+    new JoystickButton(operatorXbox, 5).onTrue(intakeSourceCmd);
+
 
     // JoystickButton shootSpeakerBtn = new JoystickButton(operatorXbox, 5);
     // shootSpeakerBtn.onTrue(shootSpeaker);
@@ -161,7 +186,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return new ShootAndTaxi(drivebase, intake, pivot, shamper, vision);
+    return autoSelector.getSelected();
   }
 
   public void setDriveMode()

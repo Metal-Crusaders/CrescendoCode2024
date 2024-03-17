@@ -15,9 +15,8 @@ public class ShootSpeaker extends Command {
 
     private double shamperSpeed;
     private DoubleSupplier speedGetter;
-    Timer revTimer, indexTimer;
+    Timer indexTimer;
 
-    private final double REV_SECONDS = 3;
     private final double INDEX_SECONDS = 1;
 
     /*
@@ -28,7 +27,6 @@ public class ShootSpeaker extends Command {
         this.intake = intake;
         this.speedGetter = speedGetter;
 
-        this.revTimer = new Timer();
         this.indexTimer = new Timer();
         
         addRequirements(shamper);
@@ -37,29 +35,18 @@ public class ShootSpeaker extends Command {
 
     @Override
     public void initialize() {
-        revTimer.start();
+        indexTimer.start();
 
-        this.shamperSpeed = speedGetter.getAsDouble();
-
-        shamper.setAmpMotorSpeed(shamperSpeed);
-        shamper.setShooterMotorSpeed(shamperSpeed);
-        shamper.setIndexSpeed(0);
-
-        intake.setIntakeBoolean(false, false);
+        shamperSpeed = speedGetter.getAsDouble();
     }
 
     @Override
     public void execute() {
-
-        if (revTimer.hasElapsed(REV_SECONDS)) {
-            indexTimer.start();
-            shamper.setAmpMotorSpeed(shamperSpeed);
-            shamper.setShooterMotorSpeed(shamperSpeed);
-            
-            shamper.setIndexSpeed(Shamper.INDEX_SPEED);
-            intake.setIntakeBoolean(true, false);
-        }
-
+        shamper.setAmpMotorSpeed(shamperSpeed);
+        shamper.setShooterMotorSpeed(shamperSpeed);
+        
+        shamper.setIndexSpeed(Shamper.INDEX_SPEED);
+        intake.setIntakeBoolean(true, false);
     }
 
     @Override
@@ -70,8 +57,6 @@ public class ShootSpeaker extends Command {
 
         intake.setIntakeBoolean(false, false);
 
-        revTimer.stop();
-        revTimer.reset();
         indexTimer.stop();
         indexTimer.reset();
     }

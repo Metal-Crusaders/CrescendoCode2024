@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.RestMode;
-import frc.robot.commands.teleop.intake.IntakeXSeconds;
+import frc.robot.commands.teleop.intake.OuttakeXSeconds;
 import frc.robot.commands.teleop.shamper.ShootSpeaker;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
@@ -17,9 +17,9 @@ import frc.robot.subsystems.Shamper;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 
-public class ShootAndTaxi extends SequentialCommandGroup {
+public class ShootOnly extends SequentialCommandGroup {
 
-    public ShootAndTaxi(
+    public ShootOnly(
         SwerveSubsystem swerve, 
         Intake intake, 
         Pivot pivot, 
@@ -30,11 +30,6 @@ public class ShootAndTaxi extends SequentialCommandGroup {
         AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
         ShootSpeaker shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
         RestMode restMode = new RestMode(pivot, shamper);
-        IntakeXSeconds intake3Seconds = new IntakeXSeconds(intake, 3);
-        Command autoPath = AutoBuilder.followPath(PathPlannerPath.fromPathFile("ShootAndTaxiPath"));
-        AlignSpeaker alignSpeaker2 = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
-        ShootSpeaker shootSpeaker2 = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
-        RestMode restMode2 = new RestMode(pivot, shamper);
 
         addRequirements(
             swerve,
@@ -47,14 +42,7 @@ public class ShootAndTaxi extends SequentialCommandGroup {
         addCommands(
             alignSpeaker,
             shootSpeaker,
-            restMode,
-            new ParallelCommandGroup(
-                intake3Seconds,
-                autoPath
-            ),
-            alignSpeaker2,
-            shootSpeaker2,
-            restMode2
+            restMode
         );
 
     }

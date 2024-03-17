@@ -1,23 +1,31 @@
 package frc.robot.commands.teleop.shamper;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shamper;
 
-public class ShootAmp extends Command {
+public class RevSpeaker extends Command {
     
     private Shamper shamper;
     private Intake intake;
+
+    private double shamperSpeed;
+    private DoubleSupplier speedGetter;
     Timer revTimer, indexTimer;
 
-    private final double REV_SECONDS = 1;
-    private final double INDEX_SECONDS = 1.5;
-    private final double AMP_SPEED = 0.5;
+    private final double REV_SECONDS = 0.01;
 
-    public ShootAmp(Shamper shamper, Intake intake) {
+    /*
+     * Speed from 0 - 1
+     */
+    public RevSpeaker(Shamper shamper, Intake intake, DoubleSupplier speedGetter) {
         this.shamper = shamper;
         this.intake = intake;
+        this.speedGetter = speedGetter;
 
         this.revTimer = new Timer();
         this.indexTimer = new Timer();
@@ -30,39 +38,28 @@ public class ShootAmp extends Command {
     public void initialize() {
         revTimer.start();
 
-        shamper.setAmpMotorSpeed(AMP_SPEED);
-        shamper.setShooterMotorSpeed(0);
+        this.shamperSpeed = speedGetter.getAsDouble();
+
+        shamper.setAmpMotorSpeed(shamperSpeed);
+        shamper.setShooterMotorSpeed(shamperSpeed);
         shamper.setIndexSpeed(0);
-        
+
         intake.setIntakeBoolean(false, false);
     }
 
     @Override
     public void execute() {
-        shamper.setAmpMotorSpeed(AMP_SPEED);
-
-        if (revTimer.hasElapsed(REV_SECONDS)) {
-            indexTimer.start();
-            shamper.setIndexSpeed(Shamper.INDEX_SPEED);
-            intake.setIntakeBoolean(true, false);
-        }
-
     }
 
     @Override
     public void end(boolean interrupted) {
-        shamper.setAmpMotorSpeed(0);
-        shamper.setIndexSpeed(0);
-        intake.setIntakeBoolean(false, false);
         revTimer.stop();
         revTimer.reset();
-        indexTimer.stop();
-        indexTimer.reset();
     }
 
     @Override
     public boolean isFinished() {
-        return (indexTimer.hasElapsed(INDEX_SECONDS));
+        return (revTimer.hasElapsed(REV_SECONDS));
     }
 
 }

@@ -8,13 +8,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Intake;
 
-public class IntakeXSeconds extends Command {
+public class OuttakeXSeconds extends Command {
 
     private final Timer timer;
     private final Intake intake;
     private double seconds;
 
-    public IntakeXSeconds(Intake intake, double seconds) {
+    public OuttakeXSeconds(Intake intake, double seconds) {
 
         this.intake = intake;
         this.timer = new Timer();
@@ -24,7 +24,7 @@ public class IntakeXSeconds extends Command {
 
     @Override
     public void initialize() {
-        intake.setSpeed(Intake.INTAKE_DEF_SPEED);
+        intake.setSpeed(-1 * Intake.INTAKE_DEF_SPEED);
         
         timer.start();
     }
@@ -32,7 +32,7 @@ public class IntakeXSeconds extends Command {
     @Override
     public void execute() {
 
-        double intakeSpeed = Intake.INTAKE_DEF_SPEED;
+        double intakeSpeed = -1 * Intake.INTAKE_DEF_SPEED;
 
         // SmartDashboard.putNumber("Intake X Seconds Intake Speed", intake.getSpeed());
         // SmartDashboard.putBoolean("Intake X Seconds Intake Beam Exists", intake.beamExists());

@@ -76,6 +76,7 @@ public class AlwaysOnIntake extends Command {
 
         SmartDashboard.putNumber("Always On Intake Speed", intakeSpeed);
         SmartDashboard.putBoolean("Beam Exists", intake.beamExists());
+        SmartDashboard.putBoolean("Intake Toggled", intakeOn);
     }
 
     @Override

@@ -22,6 +22,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotMap;
+
 import java.io.File;
 import java.util.function.DoubleSupplier;
 import swervelib.SwerveController;
@@ -43,7 +45,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public        double      maximumSpeed = Units.feetToMeters(100);
+  public        double      maximumSpeed = Units.feetToMeters(50);
 
   NetworkTableEntry v_limeLightX;
 
@@ -110,7 +112,7 @@ public class SwerveSubsystem extends SubsystemBase
         this::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
         this::setChassisSpeeds, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds
         new HolonomicPathFollowerConfig( // HolonomicPathFollowerConfig, this should likely live in your Constants class
-                                         new PIDConstants(5.0, 0.0, 0.0),
+                                         new PIDConstants(RobotMap.DrivebaseConstants.PATHPLANNER_kP, RobotMap.DrivebaseConstants.PATHPLANNER_kI, RobotMap.DrivebaseConstants.PATHPLANNER_kD),
                                          // Translation PID constants
                                          new PIDConstants(swerveDrive.swerveController.config.headingPIDF.p,
                                                           swerveDrive.swerveController.config.headingPIDF.i,
