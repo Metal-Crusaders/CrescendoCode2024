@@ -6,6 +6,8 @@ import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DigitalOutput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotMap;
@@ -25,6 +27,9 @@ public class Shamper extends SubsystemBase {
 
     public CANSparkMax indexer, ampMotor, shooterMotor;
 
+    DigitalInput beamSensor;
+    DigitalOutput beam;
+
     private boolean mode; // false for amp, true for speaker
 
     public Shamper(boolean defaultMode) {
@@ -36,6 +41,10 @@ public class Shamper extends SubsystemBase {
 
         this.ampMotor.setIdleMode(IdleMode.kBrake);
         this.shooterMotor.setIdleMode(IdleMode.kBrake);
+
+        this.beamSensor = new DigitalInput(RobotMap.ShamperConstants.BEAM_BREAK_SENSOR_DIO);
+        this.beam = new DigitalOutput(RobotMap.ShamperConstants.BEAM_BREAK_LED_DIO);
+        this.beam.set(true);
 
         // shooter vs. amp stuff
         this.shooterMotor.setInverted(RobotMap.ShamperConstants.SHOOTER_MOTOR_INVERTED);
@@ -86,6 +95,10 @@ public class Shamper extends SubsystemBase {
     
     public void setAmpMotorSpeed(double speed) {
         this.ampMotor.set(speed);
+    }
+
+    public boolean beamExists() {
+        return beamSensor.get();
     }
 
     @Override

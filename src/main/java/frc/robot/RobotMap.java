@@ -50,6 +50,9 @@ public final class RobotMap
     public static final double kI = 0.0;
     public static final double kD = 0.0;
     public static final double kFF = 0.0;
+
+    public static final int BEAM_BREAK_LED_DIO = 7;
+    public static final int BEAM_BREAK_SENSOR_DIO = 8;
   }
 
   public static final class IntakeConstants {
