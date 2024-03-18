@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.RestMode;
+import frc.robot.commands.teleop.intake.IntakeXSeconds;
 import frc.robot.commands.teleop.intake.OuttakeXSeconds;
 import frc.robot.commands.teleop.shamper.ShootSpeaker;
 import frc.robot.subsystems.Intake;
@@ -28,10 +29,8 @@ public class TwoAndTaxi extends SequentialCommandGroup {
     ) {
 
         AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
-        ShootSpeaker shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
         RestMode restMode = new RestMode(pivot, shamper);
         AlignSpeaker alignSpeaker2 = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
-        ShootSpeaker shootSpeaker2 = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
         RestMode restMode2 = new RestMode(pivot, shamper);
 
         addRequirements(
@@ -44,10 +43,9 @@ public class TwoAndTaxi extends SequentialCommandGroup {
 
         addCommands(
             alignSpeaker,
-            shootSpeaker,
             restMode,
             new ParallelCommandGroup(
-                new OuttakeXSeconds(intake, 4),
+                new IntakeXSeconds(intake, 4),
                 new SequentialCommandGroup(
                     // backwards
                     // 180
@@ -57,10 +55,10 @@ public class TwoAndTaxi extends SequentialCommandGroup {
                 )
             ),
             alignSpeaker2,
-            shootSpeaker2,
             restMode2
         );
 
     }
+
     
 }

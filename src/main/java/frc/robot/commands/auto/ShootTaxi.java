@@ -32,7 +32,6 @@ public class ShootTaxi extends SequentialCommandGroup {
     ) {
 
         AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
-        ShootSpeaker shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
         RestMode restMode = new RestMode(pivot, shamper);
 
         addRequirements(
@@ -45,7 +44,6 @@ public class ShootTaxi extends SequentialCommandGroup {
 
         addCommands(
             alignSpeaker,
-            shootSpeaker,
             restMode,
             new RawDriveAuto(swerve, -6, 1)
         );

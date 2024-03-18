@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.RestMode;
+import frc.robot.commands.teleop.intake.IntakeXSeconds;
 import frc.robot.commands.teleop.intake.OuttakeXSeconds;
 import frc.robot.commands.teleop.shamper.ShootSpeaker;
 import frc.robot.subsystems.Intake;
@@ -17,18 +18,20 @@ import frc.robot.subsystems.Shamper;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 
-public class ShootOnly extends SequentialCommandGroup {
+public class OffsetNoteShot extends SequentialCommandGroup {
 
-    public ShootOnly(
+    public OffsetNoteShot(
         SwerveSubsystem swerve, 
         Intake intake, 
         Pivot pivot, 
         Shamper shamper,
-        Vision vision
+        Vision vision,
+        boolean redAlliance
     ) {
 
-        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
         RestMode restMode = new RestMode(pivot, shamper);
+        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
+        RestMode restMode2 = new RestMode(pivot, shamper);
 
         addRequirements(
             swerve,
@@ -39,10 +42,22 @@ public class ShootOnly extends SequentialCommandGroup {
         );
 
         addCommands(
+            restMode,
+            new SequentialCommandGroup(
+                // backwards
+                // angle to face note forwards (invert this based on boolean redAlliance)
+                new ParallelCommandGroup(
+                    new IntakeXSeconds(intake, 4)
+                    // COMBINATION of x / y velocities to get note
+                )
+                // angle to directly face speaker
+                // COMBINATION of x / y velocities to get in center
+            ),
             alignSpeaker,
-            restMode
+            restMode2 
         );
 
     }
+    
     
 }

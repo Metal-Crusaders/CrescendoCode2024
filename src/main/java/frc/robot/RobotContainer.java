@@ -23,6 +23,7 @@ import frc.robot.RobotMap.DriverConstants;
 import frc.robot.commands.auto.TwoAndTaxi;
 import frc.robot.commands.auto.ShootOnly;
 import frc.robot.commands.auto.ShootTaxi;
+import frc.robot.commands.auto.ThreeNoteTaxi;
 import frc.robot.commands.subroutines.AlignAmp;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.IntakeSource;
@@ -145,7 +146,9 @@ public class RobotContainer
     autoSelector.addOption("Shoot and Taxi", new ShootTaxi(drivebase, intake, pivot, shamper, vision));
     autoSelector.addOption("Do Nothing", null);
     autoSelector.addOption("Two Note and Taxi", new TwoAndTaxi(drivebase, intake, pivot, shamper, vision));
-    autoSelector.addOption("Turn Test", new RawTurnAuto(drivebase, 3, 0.5)); // TODO FIGURE THIS OUT!
+    autoSelector.addOption("Turn Test", new RawTurnAuto(drivebase, 3, 0.5)); // TODO USE THIS TO FIND 180 STUFF
+    autoSelector.addOption("Red Alliance 3-piece", new ThreeNoteTaxi(drivebase, intake, pivot, shamper, vision, true));
+    autoSelector.addOption("Blue Alliance 3-piece", new ThreeNoteTaxi(drivebase, intake, pivot, shamper, vision, false));
 
     autoSelector.setDefaultOption("Do Nothing", null);
     
