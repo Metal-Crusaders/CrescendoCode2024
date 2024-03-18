@@ -145,7 +145,7 @@ public class RobotContainer
     autoSelector.addOption("Shoot and Taxi", new ShootTaxi(drivebase, intake, pivot, shamper, vision));
     autoSelector.addOption("Do Nothing", null);
     autoSelector.addOption("Two Note and Taxi", new TwoAndTaxi(drivebase, intake, pivot, shamper, vision));
-    autoSelector.addOption("Turn Test", new RawTurnAuto(drivebase, 3, 1)); // TODO FIGURE THIS OUT!
+    autoSelector.addOption("Turn Test", new RawTurnAuto(drivebase, 3, 0.5)); // TODO FIGURE THIS OUT!
 
     autoSelector.setDefaultOption("Do Nothing", null);
     

@@ -12,7 +12,7 @@ import frc.robot.RobotMap;
 
 public class Pivot extends SubsystemBase {
     
-    public final static double MIN_ENCODER_TICKS = 0.06;
+    public final static double MIN_ENCODER_TICKS = 0.075;
     public final static double AMP_ENCODER_TICKS = 0.25;
 
     private double TICKS_TO_DEGREES = 425.0;
