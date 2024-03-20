@@ -15,9 +15,9 @@ import frc.robot.subsystems.Vision;
 
 public class AlignSpeaker extends SequentialCommandGroup {
 
-    public AlignSpeaker(Pivot pivot, Shamper shamper, Vision vision, SwerveSubsystem swerve, Intake intake) {
+    public AlignSpeaker(Pivot pivot, Shamper shamper, Vision vision, Intake intake) {
 
-        addRequirements(pivot, shamper, vision, swerve);
+        addRequirements(pivot, shamper, vision, intake);
 
         addCommands(
             new RevSpeaker(shamper, intake, () -> vision.getTargetSpeed()),

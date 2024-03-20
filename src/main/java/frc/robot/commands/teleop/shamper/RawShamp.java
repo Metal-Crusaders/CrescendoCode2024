@@ -28,7 +28,8 @@ public class RawShamp extends Command {
     @Override
     public void initialize() {
         shamper.setIndexSpeed(0);
-        // shamper.setShooterMotorSpeed(0);
+        shamper.setShooterMotorSpeed(0);
+        shamper.setAmpMotorSpeed(0);
     }
 
     @Override
@@ -37,13 +38,16 @@ public class RawShamp extends Command {
         double indexSpeed = indexControl.getAsDouble();
 
         shamper.setIndexSpeed(deadband(indexSpeed, 0.05));
-        // shamper.setShooterMotorSpeed(deadband(shooterSpeed, 0.05));
+        shamper.setShooterMotorSpeed(deadband(indexSpeed, 0.05));
+        shamper.setAmpMotorSpeed(deadband(indexSpeed, 0.05));
+        
     }
 
     @Override
     public void end(boolean interrupted) {
         shamper.setIndexSpeed(0);
-        // shamper.setShooterMotorSpeed(0);
+        shamper.setShooterMotorSpeed(0);
+        shamper.setAmpMotorSpeed(0);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class ShootTaxi extends SequentialCommandGroup {
         Vision vision
     ) {
 
-        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
+        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, intake);
         RestMode restMode = new RestMode(pivot, shamper);
 
         addRequirements(

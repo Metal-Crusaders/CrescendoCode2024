@@ -30,7 +30,7 @@ public class OffsetNoteShot extends SequentialCommandGroup {
     ) {
 
         RestMode restMode = new RestMode(pivot, shamper);
-        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, swerve, intake);
+        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, intake);
         RestMode restMode2 = new RestMode(pivot, shamper);
 
         addRequirements(

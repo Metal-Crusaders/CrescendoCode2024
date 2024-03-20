@@ -17,6 +17,7 @@ public class OuttakeXSeconds extends Command {
     public OuttakeXSeconds(Intake intake, double seconds) {
 
         this.intake = intake;
+        this.seconds = seconds;
         this.timer = new Timer();
 
         addRequirements(intake);

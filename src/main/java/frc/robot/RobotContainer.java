@@ -29,6 +29,7 @@ import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.IntakeSource;
 import frc.robot.commands.subroutines.RestMode;
 import frc.robot.commands.teleop.intake.AlwaysOnIntake;
+import frc.robot.commands.teleop.intake.IntakeXSeconds;
 import frc.robot.commands.teleop.intake.RawIntake;
 import frc.robot.commands.teleop.pivot.PivotTickPreset;
 import frc.robot.commands.teleop.pivot.RawPivot;
@@ -36,7 +37,7 @@ import frc.robot.commands.teleop.shamper.RawShamp;
 import frc.robot.commands.teleop.shamper.ShootAmp;
 import frc.robot.commands.teleop.shamper.ShootSpeaker;
 import frc.robot.commands.teleop.swervedrive.AbsoluteDriveAdv;
-import frc.robot.commands.teleop.swervedrive.RawTurnAuto;
+import frc.robot.commands.teleop.swervedrive.SnapAngleAuto;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shamper;
@@ -128,8 +129,8 @@ public class RobotContainer
     shootCmd = new ConditionalCommand(shootSpeaker, shootAmp, () -> shamper.getMode());
     restCmd = new RestMode(pivot, shamper);
     ampAlignCmd = new AlignAmp(pivot, shamper);
-    speakerAlignCmd = new AlignSpeaker(pivot, shamper, vision, drivebase, intake);
-    intakeSourceCmd = new IntakeSource(pivot, shamper, vision, drivebase, intake);
+    speakerAlignCmd = new AlignSpeaker(pivot, shamper, vision, intake);
+    intakeSourceCmd = new IntakeSource(pivot, shamper, vision, intake);
 
     // Default Commands
     CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
@@ -146,7 +147,7 @@ public class RobotContainer
     autoSelector.addOption("Shoot and Taxi", new ShootTaxi(drivebase, intake, pivot, shamper, vision));
     autoSelector.addOption("Do Nothing", null);
     autoSelector.addOption("Two Note and Taxi", new TwoAndTaxi(drivebase, intake, pivot, shamper, vision));
-    autoSelector.addOption("Turn Test", new RawTurnAuto(drivebase, 3, 0.5)); // TODO USE THIS TO FIND 180 STUFF
+    autoSelector.addOption("Turn Test", new IntakeXSeconds(intake, 10));
     autoSelector.addOption("Red Alliance 3-piece", new ThreeNoteTaxi(drivebase, intake, pivot, shamper, vision, true));
     autoSelector.addOption("Blue Alliance 3-piece", new ThreeNoteTaxi(drivebase, intake, pivot, shamper, vision, false));
 

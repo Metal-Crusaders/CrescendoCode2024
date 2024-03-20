@@ -17,6 +17,7 @@ public class IntakeXSeconds extends Command {
     public IntakeXSeconds(Intake intake, double seconds) {
 
         this.intake = intake;
+        this.seconds = seconds;
         this.timer = new Timer();
 
         addRequirements(intake);
@@ -34,8 +35,8 @@ public class IntakeXSeconds extends Command {
 
         double intakeSpeed = Intake.INTAKE_DEF_SPEED;
 
-        // SmartDashboard.putNumber("Intake X Seconds Intake Speed", intake.getSpeed());
-        // SmartDashboard.putBoolean("Intake X Seconds Intake Beam Exists", intake.beamExists());
+        SmartDashboard.putNumber("Intake X Seconds Intake Speed", intake.getSpeed());
+        SmartDashboard.putBoolean("Intake X Seconds Intake Beam Exists", intake.beamExists());
 
         if (!intake.beamExists()) {
             intakeSpeed = 0;

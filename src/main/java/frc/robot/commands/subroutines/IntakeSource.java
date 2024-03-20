@@ -18,22 +18,17 @@ import frc.robot.subsystems.Vision;
 
 public class IntakeSource extends SequentialCommandGroup {
 
-    public IntakeSource(Pivot pivot, Shamper shamper, Vision vision, SwerveSubsystem swerve, Intake intake) {
+    public IntakeSource(Pivot pivot, Shamper shamper, Vision vision, Intake intake) {
 
-        addRequirements(pivot, shamper, vision, swerve);
+        addRequirements(pivot, shamper, vision, intake);
 
         addCommands(
             new InstantCommand(() -> shamper.setMode(true), shamper),
             new ParallelCommandGroup(
-                new PivotTickPreset(pivot, () -> 0.2), // TODO validate this angle
+                new PivotTickPreset(pivot, () -> 0.17), // TODO validate this angle
                 new NoteIntoIndex(shamper)
             ),
-            new AlignAmp(pivot, shamper),
-            new NoteIntoIntake(shamper, intake),
-            new ParallelCommandGroup(
-                new OuttakeXSeconds(intake, 0.5),
-                new RestMode(pivot, shamper)
-            )
+            new RestMode(pivot, shamper)
         );
 
     }
