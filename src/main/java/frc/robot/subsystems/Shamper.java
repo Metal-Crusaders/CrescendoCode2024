@@ -27,8 +27,8 @@ public class Shamper extends SubsystemBase {
 
     public CANSparkMax indexer, ampMotor, shooterMotor;
 
-    DigitalInput beamSensor;
-    DigitalOutput beam;
+    private DigitalInput beamSensor;
+    private DigitalOutput beam;
 
     private boolean mode; // false for amp, true for speaker
 
@@ -104,6 +104,7 @@ public class Shamper extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putString("Shamper Mode", this.getModeString());
+        SmartDashboard.putBoolean("Beam Break Shamper", this.beamExists());
     }
     
 }

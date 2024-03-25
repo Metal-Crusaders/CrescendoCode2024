@@ -45,7 +45,7 @@ public class Vision extends SubsystemBase{
     public double getTargetEncoderTicks() {
         // if (tv == 0)
         //     return 0.0;
-        return 0.20;
+        return 0.205;
     }
 
     @Override

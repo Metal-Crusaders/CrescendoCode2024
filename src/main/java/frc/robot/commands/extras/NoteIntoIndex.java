@@ -12,8 +12,8 @@ public class NoteIntoIndex extends Command {
 
     private Shamper shamper;
 
-    private final double SHOOTER_SPEED = -0.5;
-    private final double INDEX_SPEED = -0.5;
+    private final double SHOOTER_SPEED = -0.35;
+    private final double INDEX_SPEED = -0.35;
 
     public NoteIntoIndex(Shamper shamper) {
         this.shamper = shamper;

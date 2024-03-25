@@ -25,7 +25,7 @@ public class IntakeSource extends SequentialCommandGroup {
         addCommands(
             new InstantCommand(() -> shamper.setMode(true), shamper),
             new ParallelCommandGroup(
-                new PivotTickPreset(pivot, () -> 0.17), // TODO validate this angle
+                new PivotTickPreset(pivot, () -> 0.15), // TODO validate this angle
                 new NoteIntoIndex(shamper)
             ),
             new RestMode(pivot, shamper)

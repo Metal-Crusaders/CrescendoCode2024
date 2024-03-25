@@ -20,10 +20,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
-import frc.robot.commands.auto.TwoAndTaxi;
-import frc.robot.commands.auto.ShootOnly;
-import frc.robot.commands.auto.ShootTaxi;
-import frc.robot.commands.auto.ThreeNoteTaxi;
+import frc.robot.commands.auto.rawAutos.ShootOnly;
+import frc.robot.commands.auto.rawAutos.TwoAndTaxi;
 import frc.robot.commands.subroutines.AlignAmp;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.IntakeSource;
@@ -48,6 +46,7 @@ import java.io.File;
 import java.util.concurrent.locks.Condition;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
@@ -81,31 +80,32 @@ public class RobotContainer
   {
 
     // NOTE: Below is the other way to use swerve drive (w XRC), but still untuned
-    // AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
-    //                                                                () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
-    //                                                                                             DriverConstants.LEFT_Y_DEADBAND),
-    //                                                                () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
-    //                                                                                             DriverConstants.LEFT_X_DEADBAND),
-    //                                                                () -> MathUtil.applyDeadband(driverXbox.getRightX(),
-    //                                                                                             DriverConstants.RIGHT_X_DEADBAND),
-    //                                                                driverXbox::getYButtonPressed,
-    //                                                                driverXbox::getAButtonPressed,
-    //                                                                driverXbox::getXButtonPressed,
-    //                                                                driverXbox::getBButtonPressed);
+    AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
+                                                                   () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
+                                                                                                DriverConstants.LEFT_Y_DEADBAND),
+                                                                   () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
+                                                                                                DriverConstants.LEFT_X_DEADBAND),
+                                                                   () -> MathUtil.applyDeadband(driverXbox.getRightX(),
+                                                                                                DriverConstants.RIGHT_X_DEADBAND),
+                                                                   driverXbox::getYButtonPressed,
+                                                                   driverXbox::getAButtonPressed,
+                                                                   driverXbox::getXButtonPressed,
+                                                                   driverXbox::getBButtonPressed);
 
     // Applies deadbands and inverts controls because joysticks
     // are back-right positive while robot
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
-    Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
-        () -> driverXbox.getRightX(),
-        () -> driverXbox.getRightY());
+    // Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+    //     () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
+    //     () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
+    //     () -> driverXbox.getRightX(),
+    //     () -> driverXbox.getRightY());
 
     Command alwaysOnIntake = new AlwaysOnIntake(
       intake, 
+      () -> (!shamper.beamExists()),
       () -> driverXbox.getLeftX(), 
       () -> driverXbox.getLeftY(), 
       () -> driverXbox.getLeftBumperPressed(),
@@ -133,27 +133,33 @@ public class RobotContainer
     intakeSourceCmd = new IntakeSource(pivot, shamper, vision, intake);
 
     // Default Commands
-    CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
+    CommandScheduler.getInstance().setDefaultCommand(drivebase, closedAbsoluteDriveAdv);
     CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
     CommandScheduler.getInstance().setDefaultCommand(shamper, rawShamper);
 
-    configureBindings();
+    NamedCommands.registerCommand("autoShoot", shootCmd);
+    NamedCommands.registerCommand("restMode", restCmd);
+    NamedCommands.registerCommand("intake3Seconds", new IntakeXSeconds(intake, 3));
 
     Command shootOnly = new ShootOnly(drivebase, intake, pivot, shamper, vision);
 
     autoSelector = new SendableChooser<>();
     autoSelector.addOption("Shoot Only", shootOnly);
-    autoSelector.addOption("Shoot and Taxi", new ShootTaxi(drivebase, intake, pivot, shamper, vision));
     autoSelector.addOption("Do Nothing", null);
     autoSelector.addOption("Two Note and Taxi", new TwoAndTaxi(drivebase, intake, pivot, shamper, vision));
-    autoSelector.addOption("Turn Test", new IntakeXSeconds(intake, 10));
-    autoSelector.addOption("Red Alliance 3-piece", new ThreeNoteTaxi(drivebase, intake, pivot, shamper, vision, true));
-    autoSelector.addOption("Blue Alliance 3-piece", new ThreeNoteTaxi(drivebase, intake, pivot, shamper, vision, false));
+    
+    PathPlannerAuto taxiAuto = new PathPlannerAuto("PathPlannerTestAuto");
+    PathPlannerAuto twoNoteFarSideAuto = new PathPlannerAuto("2NoteFarSideAuto");
+
+    autoSelector.addOption("Taxi Auto with PathPlanner", taxiAuto);
+    autoSelector.addOption("Two Note Far Side Auto with PathPlanner", twoNoteFarSideAuto);
 
     autoSelector.setDefaultOption("Do Nothing", null);
     
     SmartDashboard.putData(autoSelector);
+    
+    configureBindings();
   }
 
   /**
@@ -167,7 +173,7 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    new JoystickButton(driverXbox, 1).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    new JoystickButton(driverXbox, 5).onTrue((new InstantCommand(drivebase::zeroGyro)));
 
     new JoystickButton(operatorXbox, 1).onTrue(shootCmd);
     new JoystickButton(operatorXbox, 2).onTrue(restCmd);

@@ -28,7 +28,7 @@ public final class RobotMap
     // Hold time on motor brakes when disabled
     public static final double WHEEL_LOCK_TIME = 10; // seconds
 
-    public static final double ANGLING_kP = 8.0 / 25.0; // TODO figure this out, should be starting kP should be maxAngularVelocity (try 3.0) / maxOffset
+    public static final double ANGLING_kP = 8.0 / 25.0;
   
     public static final double PATHPLANNER_kP = 10.0;
     public static final double PATHPLANNER_kI = 0.0;
@@ -75,7 +75,7 @@ public final class RobotMap
 
     public static final int DIO_PIVOT_ABS = 4;
 
-    public static final double kP = 1.0 / 0.22;
+    public static final double kP = 1.25 / 0.22;
     public static final double kI = 0.0;
     public static final double kD = 0.001;
   }

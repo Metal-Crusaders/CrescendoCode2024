@@ -26,7 +26,7 @@ import frc.robot.subsystems.Vision;
 
 public class TwoAndTaxi extends SequentialCommandGroup {
 
-    double PIVOT_TICKS_NOTE_2 = 0.14;
+    double PIVOT_TICKS_NOTE_2 = 0.15;
 
     public TwoAndTaxi(
         SwerveSubsystem swerve, 

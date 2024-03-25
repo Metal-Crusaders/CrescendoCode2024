@@ -3,6 +3,7 @@ package frc.robot.commands.teleop.shamper;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shamper;
 
@@ -37,9 +38,9 @@ public class RawShamp extends Command {
 
         double indexSpeed = indexControl.getAsDouble();
 
-        shamper.setIndexSpeed(deadband(indexSpeed, 0.05));
-        shamper.setShooterMotorSpeed(deadband(indexSpeed, 0.05));
-        shamper.setAmpMotorSpeed(deadband(indexSpeed, 0.05));
+        shamper.setIndexSpeed(deadband(indexSpeed, 0.25));
+        shamper.setShooterMotorSpeed(deadband(indexSpeed, 0.25));
+        shamper.setAmpMotorSpeed(deadband(indexSpeed, 0.25));
         
     }
 

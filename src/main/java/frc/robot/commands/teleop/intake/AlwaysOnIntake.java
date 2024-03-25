@@ -15,7 +15,7 @@ public class AlwaysOnIntake extends Command {
     private final Intake intake;
     private final DoubleSupplier leftX;
     private final DoubleSupplier leftY;
-    private final BooleanSupplier toggleBtn;
+    private final BooleanSupplier toggleBtn, inShamper;
     private final XboxController xbox;
 
     private Timer timer;
@@ -24,11 +24,13 @@ public class AlwaysOnIntake extends Command {
 
     private final double FLOOR_INTAKE_SPEED = 0.25;
 
-    public AlwaysOnIntake(Intake intake, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier toggleBtn, XboxController xbox) {
+    public AlwaysOnIntake(Intake intake, BooleanSupplier inShamper, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier toggleBtn, XboxController xbox) {
 
         this.intake = intake;
         this.leftX = leftX;
         this.leftY = leftY;
+
+        this.inShamper = inShamper;
         
         this.toggleBtn = toggleBtn;
 
@@ -52,7 +54,7 @@ public class AlwaysOnIntake extends Command {
             intakeSpeed = FLOOR_INTAKE_SPEED;
         }
 
-        if (!intake.beamExists()) {
+        if (!intake.beamExists() || inShamper.getAsBoolean()) {
             intakeSpeed = 0;
             xbox.setRumble(RumbleType.kBothRumble, 0.25);
             timer.start();
@@ -64,9 +66,11 @@ public class AlwaysOnIntake extends Command {
             timer.reset();
         }
 
-        if (toggleBtn.getAsBoolean()) {
-            intakeOn = !intakeOn;
-        }
+        // if (toggleBtn.getAsBoolean()) {
+        //     intakeOn = !intakeOn;
+        // }
+
+        intakeOn = true;
 
         if (!intakeOn) {
             intakeSpeed = 0;
