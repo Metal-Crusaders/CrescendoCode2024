@@ -15,8 +15,8 @@ public class Pivot extends SubsystemBase {
     public final static double MIN_ENCODER_TICKS = 0.075;
     public final static double AMP_ENCODER_TICKS = 0.25;
  
-    private double TICKS_TO_DEGREES = 425.0;
-    private double MAX_HOLD_PERCENT = 0.025;
+    private double TICKS_TO_DEGREES = 390.0;
+    private double MAX_HOLD_PERCENT = 0.03;
 
     private final CANSparkMax leftPivotMotor, rightPivotMotor;
     private final DutyCycleEncoder encoder;
@@ -44,7 +44,7 @@ public class Pivot extends SubsystemBase {
             speed = 0;
         }
         if (speed == 0) {
-            speed = Math.cos(TICKS_TO_DEGREES * this.getEncoderTicks()) * MAX_HOLD_PERCENT;
+            speed = Math.cos((TICKS_TO_DEGREES * this.getEncoderTicks()) * Math.PI / 180.0) * MAX_HOLD_PERCENT;
         }
         leftPivotMotor.set(speed);
     }
@@ -63,6 +63,7 @@ public class Pivot extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Cosine Compensation Percent Speed", Math.cos((TICKS_TO_DEGREES * this.getEncoderTicks()) * Math.PI / 180.0) * MAX_HOLD_PERCENT);
     }
     
 }

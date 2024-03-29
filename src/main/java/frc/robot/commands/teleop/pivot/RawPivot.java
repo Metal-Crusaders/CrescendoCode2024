@@ -11,6 +11,8 @@ public class RawPivot extends Command {
     private Pivot pivot;
     private DoubleSupplier pivotUpControl, pivotDownControl;
 
+    private double PIVOT_MAX_SPEED = 0.5;
+
     public RawPivot(Pivot pivot, DoubleSupplier pivotUpControl, DoubleSupplier pivotDownControl) {
         this.pivot = pivot;
         this.pivotUpControl = pivotUpControl;
@@ -27,8 +29,8 @@ public class RawPivot extends Command {
     @Override
     public void execute() {
         
-        double pivotSpeed = deadband(pivotUpControl.getAsDouble() - pivotDownControl.getAsDouble(), 0.05);
-        SmartDashboard.putNumber("Pivot Speed", pivotSpeed);
+        double pivotSpeed = deadband(pivotUpControl.getAsDouble() - pivotDownControl.getAsDouble(), 0.05) * PIVOT_MAX_SPEED;
+        SmartDashboard.putNumber("Pivot Speed", pivot.getPivotSpeed());
         SmartDashboard.putNumber("Encoder Ticks", pivot.getEncoderTicks());
         pivot.setPivotSpeed(pivotSpeed);
 

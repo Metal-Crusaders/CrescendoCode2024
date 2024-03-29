@@ -30,10 +30,13 @@ public final class RobotMap
 
     public static final double ANGLING_kP = 8.0 / 25.0;
   
-    public static final double PATHPLANNER_kP = 10.0;
+    public static final double PATHPLANNER_kP = 7.5;
     public static final double PATHPLANNER_kI = 0.0;
     public static final double PATHPLANNER_kD = 0.0;
     
+    public static final double PATHPLANNER_ROT_kP = 8.0;
+    public static final double PATHPLANNER_ROT_kI = 0.0;
+    public static final double PATHPLANNER_ROT_kD = 0.0;
 
   }
 
@@ -75,9 +78,9 @@ public final class RobotMap
 
     public static final int DIO_PIVOT_ABS = 4;
 
-    public static final double kP = 1.25 / 0.22;
-    public static final double kI = 0.0;
-    public static final double kD = 0.001;
+    public static final double kP = 1.25 / 0.23;
+    public static final double kI = 200;
+    public static final double kD = 0.00;
   }
 
   public static class DriverConstants {
@@ -88,7 +91,7 @@ public final class RobotMap
     public static final double LEFT_X_DEADBAND  = 0.1;
     public static final double LEFT_Y_DEADBAND  = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
-    public static final double TURN_CONSTANT    = 6;
+    public static final double TURN_CONSTANT    = 20.0;
   }
 
   public static class OperatorConstants {

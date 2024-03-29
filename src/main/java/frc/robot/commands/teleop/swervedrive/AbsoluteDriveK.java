@@ -21,12 +21,12 @@ import swervelib.math.SwerveMath;
 /**
  * A more advanced Swerve Control System that has 4 buttons for which direction to face
  */
-public class AbsoluteDriveAdv extends Command
+public class AbsoluteDriveK extends Command
 {
 
   private final SwerveSubsystem swerve;
   private final DoubleSupplier  vX, vY;
-  private final DoubleSupplier  headingAdjust;
+  private final DoubleSupplier  rotationX;
   private final BooleanSupplier lookAway, lookTowards, lookLeft, lookRight;
   private       boolean         resetHeading = false;
 
@@ -42,7 +42,7 @@ public class AbsoluteDriveAdv extends Command
    * @param vY            DoubleSupplier that supplies the y-translation joystick input.  Should be in the range -1 to 1
    *                      with deadband already accounted for.  Positive Y is towards the left wall when looking through
    *                      the driver station glass.
-   * @param headingAdjust DoubleSupplier that supplies the component of the robot's heading angle that should be
+   * @param rotationX DoubleSupplier that supplies the component of the robot's heading angle that should be
    *                      adjusted. Should range from -1 to 1 with deadband already accounted for.
    * @param lookAway      Face the robot towards the opposing alliance's wall in the same direction the driver is
    *                      facing
@@ -50,14 +50,14 @@ public class AbsoluteDriveAdv extends Command
    * @param lookLeft      Face the robot left
    * @param lookRight     Face the robot right
    */
-  public AbsoluteDriveAdv(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier headingAdjust,
+  public AbsoluteDriveK(SwerveSubsystem swerve, DoubleSupplier vX, DoubleSupplier vY, DoubleSupplier rotationX,
                           BooleanSupplier lookAway, BooleanSupplier lookTowards, BooleanSupplier lookLeft,
                           BooleanSupplier lookRight)
   {
     this.swerve = swerve;
     this.vX = vX;
     this.vY = vY;
-    this.headingAdjust = headingAdjust;
+    this.rotationX = rotationX;
     this.lookAway = lookAway;
     this.lookTowards = lookTowards;
     this.lookLeft = lookLeft;
@@ -104,7 +104,7 @@ public class AbsoluteDriveAdv extends Command
     // Prevent Movement After Auto
     if (resetHeading)
     {
-      if (headingX == 0 && headingY == 0 && Math.abs(headingAdjust.getAsDouble()) > 0)
+      if (headingX == 0 && headingY == 0 && Math.abs(rotationX.getAsDouble()) > 0)
       {
         // Get the curret Heading
         Rotation2d currentHeading = swerve.getHeading();
@@ -128,10 +128,10 @@ public class AbsoluteDriveAdv extends Command
     SmartDashboard.putString("Translation", translation.toString());
 
     // Make the robot move
-    if (headingX == 0 && headingY == 0 && Math.abs(headingAdjust.getAsDouble()) > 0)
+    if (headingX == 0 && headingY == 0 && Math.abs(rotationX.getAsDouble()) > 0)
     {
       resetHeading = true;
-      swerve.drive(translation, (RobotMap.DriverConstants.TURN_CONSTANT * -headingAdjust.getAsDouble()), true);
+      swerve.drive(translation, RobotMap.DriverConstants.TURN_CONSTANT * rotationX.getAsDouble(), true);
     } else
     {
       swerve.drive(translation, desiredSpeeds.omegaRadiansPerSecond, true);

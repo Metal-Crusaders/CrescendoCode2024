@@ -17,7 +17,7 @@ public class RevSpeaker extends Command {
     private DoubleSupplier speedGetter;
     Timer revTimer, indexTimer;
 
-    private final double REV_SECONDS = 0.01;
+    private final double REV_SECONDS = 1;
 
     /*
      * Speed from 0 - 1

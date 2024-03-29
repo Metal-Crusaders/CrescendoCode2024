@@ -36,7 +36,7 @@ public class TwoAndTaxi extends SequentialCommandGroup {
         Vision vision
     ) {
 
-        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, intake);
+        AlignSpeaker alignSpeaker = new AlignSpeaker(swerve, pivot, shamper, vision, intake);
         RestMode restMode = new RestMode(pivot, shamper);
         RestMode restMode2 = new RestMode(pivot, shamper);
 
@@ -63,7 +63,7 @@ public class TwoAndTaxi extends SequentialCommandGroup {
                 new PivotTickPreset(pivot, () -> PIVOT_TICKS_NOTE_2),
                 new RevSpeaker(shamper, intake, () -> vision.getTargetSpeed())
             ),
-            new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed()),
+            new ShootSpeaker(shamper, intake, pivot, () -> vision.getTargetSpeed()),
             restMode2
         );
 

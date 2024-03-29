@@ -15,13 +15,17 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
-import frc.robot.commands.auto.rawAutos.ShootOnly;
-import frc.robot.commands.auto.rawAutos.TwoAndTaxi;
+import frc.robot.commands.auto.ShootOnly;
+import frc.robot.commands.auto.TwoAndTaxi;
+import frc.robot.commands.auto.ppAutos.ShootTaxiPP;
+import frc.robot.commands.auto.ppAutos.ThreeNoteFarSidePP;
+import frc.robot.commands.auto.ppAutos.TwoNoteFarSidePP;
 import frc.robot.commands.subroutines.AlignAmp;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.IntakeSource;
@@ -34,7 +38,7 @@ import frc.robot.commands.teleop.pivot.RawPivot;
 import frc.robot.commands.teleop.shamper.RawShamp;
 import frc.robot.commands.teleop.shamper.ShootAmp;
 import frc.robot.commands.teleop.shamper.ShootSpeaker;
-import frc.robot.commands.teleop.swervedrive.AbsoluteDriveAdv;
+import frc.robot.commands.teleop.swervedrive.AbsoluteDriveK;
 import frc.robot.commands.teleop.swervedrive.SnapAngleAuto;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
@@ -80,7 +84,7 @@ public class RobotContainer
   {
 
     // NOTE: Below is the other way to use swerve drive (w XRC), but still untuned
-    AbsoluteDriveAdv closedAbsoluteDriveAdv = new AbsoluteDriveAdv(drivebase,
+    AbsoluteDriveK closedAbsoluteDriveAdv = new AbsoluteDriveK(drivebase,
                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftY(),
                                                                                                 DriverConstants.LEFT_Y_DEADBAND),
                                                                    () -> MathUtil.applyDeadband(driverXbox.getLeftX(),
@@ -97,11 +101,16 @@ public class RobotContainer
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
-    // Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
-    //     () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
-    //     () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
-    //     () -> driverXbox.getRightX(),
-    //     () -> driverXbox.getRightY());
+    Command driveFieldOrientedDirectAngle = drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
+        () -> driverXbox.getRightX(),
+        () -> driverXbox.getRightY());
+
+    Command driveFieldOrientedRotation = drivebase.driveCommand(
+        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
+        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
+        () -> (-1 * driverXbox.getRightX()));
 
     Command alwaysOnIntake = new AlwaysOnIntake(
       intake, 
@@ -123,22 +132,21 @@ public class RobotContainer
     RawPivot rawPivot = new RawPivot(pivot, () -> operatorXbox.getRightTriggerAxis(), () -> operatorXbox.getLeftTriggerAxis());
 
     shootAmp = new ShootAmp(shamper, intake);
-    shootSpeaker = new ShootSpeaker(shamper, intake, () -> vision.getTargetSpeed());
+    shootSpeaker = new ShootSpeaker(shamper, intake, pivot, () -> vision.getTargetSpeed());
 
     // Subroutine buttons!
     shootCmd = new ConditionalCommand(shootSpeaker, shootAmp, () -> shamper.getMode());
     restCmd = new RestMode(pivot, shamper);
     ampAlignCmd = new AlignAmp(pivot, shamper);
-    speakerAlignCmd = new AlignSpeaker(pivot, shamper, vision, intake);
+    speakerAlignCmd = new AlignSpeaker(drivebase, pivot, shamper, vision, intake);
     intakeSourceCmd = new IntakeSource(pivot, shamper, vision, intake);
 
     // Default Commands
-    CommandScheduler.getInstance().setDefaultCommand(drivebase, closedAbsoluteDriveAdv);
+    CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle); // TODO Test AbsoluteDriveK
     CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
     CommandScheduler.getInstance().setDefaultCommand(shamper, rawShamper);
 
-    NamedCommands.registerCommand("autoShoot", shootCmd);
     NamedCommands.registerCommand("restMode", restCmd);
     NamedCommands.registerCommand("intake3Seconds", new IntakeXSeconds(intake, 3));
 
@@ -149,11 +157,17 @@ public class RobotContainer
     autoSelector.addOption("Do Nothing", null);
     autoSelector.addOption("Two Note and Taxi", new TwoAndTaxi(drivebase, intake, pivot, shamper, vision));
     
-    PathPlannerAuto taxiAuto = new PathPlannerAuto("PathPlannerTestAuto");
-    PathPlannerAuto twoNoteFarSideAuto = new PathPlannerAuto("2NoteFarSideAuto");
+    // PathPlannerAuto taxiAuto = new PathPlannerAuto("PathPlannerTestAuto");
 
-    autoSelector.addOption("Taxi Auto with PathPlanner", taxiAuto);
-    autoSelector.addOption("Two Note Far Side Auto with PathPlanner", twoNoteFarSideAuto);
+    autoSelector.addOption("Path Planner Taxi", new PathPlannerAuto("PathPlannerTestAuto"));
+    autoSelector.addOption("Two Note Path", new PathPlannerAuto("2NoteFarSideAuto"));
+    autoSelector.addOption("Two Note Far Side Auto with PathPlanner", new TwoNoteFarSidePP(drivebase, intake, pivot, shamper, vision));
+    autoSelector.addOption("Third Note Center Auto", new PathPlannerAuto("GrabNote3Auto"));
+    autoSelector.addOption("Three Note Path", new SequentialCommandGroup(
+      new PathPlannerAuto("2NoteFarSideAuto"),
+      new PathPlannerAuto("GrabNote3Auto")
+    ));
+    autoSelector.addOption("Three Note Far Side Auto with PathPlanner", new ThreeNoteFarSidePP(drivebase, intake, pivot, shamper, vision));
 
     autoSelector.setDefaultOption("Do Nothing", null);
     

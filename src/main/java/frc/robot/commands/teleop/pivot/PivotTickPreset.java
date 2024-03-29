@@ -10,7 +10,7 @@ import frc.robot.subsystems.Pivot;
 
 public class PivotTickPreset extends Command {
 
-    private final double THRESHOLD = 0.005;
+    private final double THRESHOLD = 0.0025;
     
     private Pivot pivot;
     private DoubleSupplier targetTickGetter;
@@ -34,6 +34,9 @@ public class PivotTickPreset extends Command {
     public void initialize() {
         this.targetTicks = targetTickGetter.getAsDouble();
         pivot.setPivotSpeed(0);
+        integralSum = 0;
+        output = 0;
+        lastError = 0;
     }
 
     @Override
@@ -58,6 +61,8 @@ public class PivotTickPreset extends Command {
 
         lastError = error;
         timer.reset();
+
+        SmartDashboard.putNumber("Integral Sum Pivot", integralSum);
 
     }
 

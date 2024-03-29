@@ -10,21 +10,21 @@ import frc.robot.RobotMap;
 public class Vision extends SubsystemBase{
 
     double tv, tx, ty, ta;
-    double selectedAngle = 0.06;
+    double selectedAngle = 0.06, targetTicks;
     SendableChooser<Double> angleChooser;
 
     // Working Velocity and Angle: 0.95 at 0.16 ticks
 
     public Vision() {
 
-        // this.angleChooser = new SendableChooser<>();
-        // for (double i = 0.06; i < 0.16; i += 0.01) {
-        //     this.angleChooser.addOption(Double.toString(i), i);
-        // }
+        this.angleChooser = new SendableChooser<>();
+        for (double i = 0.06; i < 0.20; i += 0.01) {
+            this.angleChooser.addOption(Double.toString(i), i);
+        }
 
-        // this.angleChooser.setDefaultOption("0.06", 0.06);
+        this.angleChooser.setDefaultOption("0.06", 0.06);
 
-        // SmartDashboard.putData("Speed Selector", angleChooser);
+        SmartDashboard.putData("Angle Selector", angleChooser);
 
     }
 
@@ -41,11 +41,30 @@ public class Vision extends SubsystemBase{
         return 1;
     }
 
+    public double getTagDistance() {
+        double targetOffsetAngle_Vertical = ty;
+
+        // how many degrees back is your limelight rotated from perfectly vertical?
+        double limelightMountAngleDegrees = 30.0; 
+
+        // distance from the center of the Limelight lens to the floor
+        double limelightLensHeightInches = 13.0;
+
+        // distance from the target to the floor
+        double goalHeightInches = 57.125; 
+
+        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetAngle_Vertical;
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+        //calculate distance
+        double distanceFromLimelightToGoalInches = (goalHeightInches - limelightLensHeightInches) / Math.tan(angleToGoalRadians);
+        return distanceFromLimelightToGoalInches;
+    }
+
     
     public double getTargetEncoderTicks() {
-        // if (tv == 0)
-        //     return 0.0;
-        return 0.205;
+        // return selectedAngle;
+        return targetTicks;
     }
 
     @Override
@@ -60,8 +79,16 @@ public class Vision extends SubsystemBase{
         SmartDashboard.putNumber("Limelight Target Horizontal Offset", tx);
         SmartDashboard.putNumber("Limelight Target Vertical Offset", ty);
         SmartDashboard.putNumber("Limelight Target Area", ta);
+        SmartDashboard.putNumber("Limelight Distance from Goal", this.getTagDistance());
 
-        // selectedAngle = angleChooser.getSelected();
+        selectedAngle = angleChooser.getSelected();
+
+        if (tv == 0) {
+            targetTicks = 0.14;
+        } else {
+            targetTicks = 0.22259205 + -0.00072254 * this.getTagDistance();
+        }
+        
             
     }
     

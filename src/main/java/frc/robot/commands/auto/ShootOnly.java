@@ -27,7 +27,7 @@ public class ShootOnly extends SequentialCommandGroup {
         Vision vision
     ) {
 
-        AlignSpeaker alignSpeaker = new AlignSpeaker(pivot, shamper, vision, intake);
+        AlignSpeaker alignSpeaker = new AlignSpeaker(swerve, pivot, shamper, vision, intake);
         RestMode restMode = new RestMode(pivot, shamper);
 
         addRequirements(
