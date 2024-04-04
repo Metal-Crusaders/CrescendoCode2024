@@ -94,7 +94,7 @@ public final class RobotMap
     public static final double LEFT_X_DEADBAND  = 0.1;
     public static final double LEFT_Y_DEADBAND  = 0.1;
     public static final double RIGHT_X_DEADBAND = 0.1;
-    public static final double TURN_CONSTANT    = 20.0;
+    public static final double TURN_CONSTANT    = 30.0;
   }
 
   public static class OperatorConstants {

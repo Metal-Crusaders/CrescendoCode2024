@@ -105,12 +105,12 @@ public class RobotContainer
 
     Command karthikDrive = new KarthikDrive(
         drivebase, 
+        () -> (driverXbox.getLeftY()),
         () -> (driverXbox.getLeftX()),
-        () -> (driverXbox.getLeftX()),
-        () -> (driverXbox.getLeftX()),
-        () -> (driverXbox.getLeftX()),
-        () -> (driverXbox.getLeftX()),
-        () -> (driverXbox.getLeftX())
+        () -> (driverXbox.getRightX()),
+        () -> (driverXbox.getRightY()),
+        () -> (driverXbox.getLeftTriggerAxis()),
+        () -> (driverXbox.getRightTriggerAxis())
       );
 
     Command alwaysOnIntake = new AlwaysOnIntake(
@@ -143,7 +143,7 @@ public class RobotContainer
     intakeSourceCmd = new IntakeSource(pivot, shamper, vision, intake);
 
     // Default Commands
-    CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle); // TODO Test KarthikDrive
+    CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
     CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
     CommandScheduler.getInstance().setDefaultCommand(shamper, rawShamper);
@@ -191,12 +191,11 @@ public class RobotContainer
 
     new JoystickButton(driverXbox, 5).onTrue((new InstantCommand(drivebase::zeroGyro)));
 
-    // TODO test BreakOut
-    new JoystickButton(operatorXbox, 1).onTrue(new BreakOut(shootCmd, operatorXbox));
+    new JoystickButton(operatorXbox, 1).onTrue(shootCmd);
     new JoystickButton(operatorXbox, 2).onTrue(restCmd);
-    new JoystickButton(operatorXbox, 3).onTrue(new BreakOut(speakerAlignCmd, operatorXbox));
+    new JoystickButton(operatorXbox, 3).onTrue(speakerAlignCmd);
     new JoystickButton(operatorXbox, 4).onTrue(ampAlignCmd);
-    new JoystickButton(operatorXbox, 5).onTrue(new BreakOut(intakeSourceCmd, operatorXbox));
+    new JoystickButton(operatorXbox, 5).onTrue(intakeSourceCmd);
 
 
     // JoystickButton shootSpeakerBtn = new JoystickButton(operatorXbox, 5);

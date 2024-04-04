@@ -9,7 +9,7 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 public class KarthikDrive extends Command {
 
-    private final double MAX_ANGULAR_VELO = 6.0;
+    private final double MAX_ANGULAR_VELO = 12.0;
 
     private final SwerveSubsystem swerve;
 
@@ -34,6 +34,7 @@ public class KarthikDrive extends Command {
         this.leftTurn = leftTurn;
         this.rightTurn = rightTurn;
 
+        addRequirements(this.swerve);
     }
 
     @Override
@@ -44,7 +45,7 @@ public class KarthikDrive extends Command {
     @Override
     public void execute() {
 
-        double angularVelo = (this.rightTurn.getAsDouble() - this.leftTurn.getAsDouble()) * MAX_ANGULAR_VELO;
+        double angularVelo = (this.leftTurn.getAsDouble() - this.rightTurn.getAsDouble()) * MAX_ANGULAR_VELO;
 
         if (Math.abs(angularVelo) < 0.5) {
             ChassisSpeeds desiredSpeeds = this.swerve.getTargetSpeeds(

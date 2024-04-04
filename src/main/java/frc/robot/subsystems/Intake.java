@@ -26,8 +26,8 @@ public class Intake extends SubsystemBase {
         this.intakeMotor.setInverted(RobotMap.IntakeConstants.INTAKE_REVERSED);
         this.intakeMotor.setIdleMode(IdleMode.kBrake);
 
-        this.frontRoller = new VictorSP(RobotMap.IntakeConstants.FRONT_ROLLER_PWM);
-        this.frontRoller.setInverted(RobotMap.IntakeConstants.FRONT_ROLLER_REVERSED);
+        // this.frontRoller = new VictorSP(RobotMap.IntakeConstants.FRONT_ROLLER_PWM);
+        // this.frontRoller.setInverted(RobotMap.IntakeConstants.FRONT_ROLLER_REVERSED);
 
         this.beamSensor = new DigitalInput(RobotMap.IntakeConstants.BEAM_BREAK_SENSOR_DIO);
         this.beam = new DigitalOutput(RobotMap.IntakeConstants.BEAM_BREAK_LED_DIO);
@@ -44,7 +44,7 @@ public class Intake extends SubsystemBase {
 
     public void setSpeed(double speed) {
         this.intakeMotor.set(speed);
-        this.frontRoller.set(0.8 * speed);
+        // this.frontRoller.set(speed);
     }
 
     public double getSpeed() {
