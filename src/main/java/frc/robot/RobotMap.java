@@ -63,6 +63,9 @@ public final class RobotMap
     public static final int INTAKE_CAN_ID = 16;
     public static final boolean INTAKE_REVERSED = true;
 
+    public static final int FRONT_ROLLER_PWM = 1;
+    public static final boolean FRONT_ROLLER_REVERSED = false;
+
     public static final int BEAM_BREAK_LED_DIO = 5;
     public static final int BEAM_BREAK_SENSOR_DIO = 6;
 
