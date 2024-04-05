@@ -98,20 +98,10 @@ public class RobotContainer
         () -> driverXbox.getRightX(),
         () -> driverXbox.getRightY());
 
-    Command driveFieldOrientedRotation = drivebase.driveCommand(
-        () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
-        () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
-        () -> (-1 * driverXbox.getRightX()));
-
-    Command karthikDrive = new KarthikDrive(
-        drivebase, 
-        () -> (driverXbox.getLeftY()),
-        () -> (driverXbox.getLeftX()),
-        () -> (driverXbox.getRightX()),
-        () -> (driverXbox.getRightY()),
-        () -> (driverXbox.getLeftTriggerAxis()),
-        () -> (driverXbox.getRightTriggerAxis())
-      );
+    Command simDrive = drivebase.simDriveCommand(
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), RobotMap.DriverConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), RobotMap.DriverConstants.LEFT_X_DEADBAND),
+      () -> driverXbox.getRawAxis(2));
 
     Command alwaysOnIntake = new AlwaysOnIntake(
       intake, 

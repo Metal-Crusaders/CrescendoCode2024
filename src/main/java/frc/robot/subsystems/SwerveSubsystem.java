@@ -45,7 +45,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * Maximum speed of the robot in meters per second, used to limit acceleration.
    */
-  public        double      maximumSpeed = Units.feetToMeters(50);
+  public        double      maximumSpeed = Units.feetToMeters(100);
 
   NetworkTableEntry v_limeLightX;
 
