@@ -27,6 +27,7 @@ import frc.robot.commands.auto.ppAutos.ShootTaxiPP;
 import frc.robot.commands.auto.ppAutos.ThreeNoteFarSidePP;
 import frc.robot.commands.auto.ppAutos.TrollAuto;
 import frc.robot.commands.auto.ppAutos.TwoNoteFarSidePP;
+import frc.robot.commands.auto.ppAutos.TwoNoteFarSideVisionPP;
 import frc.robot.commands.extras.BreakOut;
 import frc.robot.commands.subroutines.AlignAmp;
 import frc.robot.commands.subroutines.AlignSpeaker;
@@ -146,13 +147,8 @@ public class RobotContainer
     autoSelector = new SendableChooser<>();
     autoSelector.addOption("Shoot Only", shootOnly);
     autoSelector.addOption("Do Nothing", null);
-    autoSelector.addOption("Two Note and Taxi", new TwoAndTaxi(drivebase, intake, pivot, shamper, vision));
-    
-    // PathPlannerAuto taxiAuto = new PathPlannerAuto("PathPlannerTestAuto");
-
-    autoSelector.addOption("Path Planner Taxi", new PathPlannerAuto("PathPlannerTestAuto"));
-    autoSelector.addOption("Two Note Path", new PathPlannerAuto("2NoteFarSideAuto"));
     autoSelector.addOption("Two Note Far Side Auto with PathPlanner", new TwoNoteFarSidePP(drivebase, intake, pivot, shamper, vision));
+    autoSelector.addOption("Vision-Based 2 Note Far Side Auto with PathPlanner", new TwoNoteFarSideVisionPP(drivebase, intake, pivot, shamper, vision));
     autoSelector.addOption("Third Note Center Auto", new PathPlannerAuto("GrabNote3Auto"));
     autoSelector.addOption("Three Note Path", new SequentialCommandGroup(
       new PathPlannerAuto("2NoteFarSideAuto"),
@@ -182,6 +178,7 @@ public class RobotContainer
     new JoystickButton(driverXbox, 5).onTrue((new InstantCommand(drivebase::zeroGyro)));
 
     new JoystickButton(operatorXbox, 1).onTrue(shootCmd);
+    // new JoystickButton(driverXbox, 1).onTrue(new PivotTickPreset(pivot, () -> vision.getSelectorEncoderTicks()));
     new JoystickButton(operatorXbox, 2).onTrue(restCmd);
     new JoystickButton(operatorXbox, 3).onTrue(speakerAlignCmd);
     new JoystickButton(operatorXbox, 4).onTrue(ampAlignCmd);

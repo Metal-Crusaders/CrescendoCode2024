@@ -82,7 +82,7 @@ public final class RobotMap
     public static final int DIO_PIVOT_ABS = 4;
 
     public static final double kP = 1.25 / 0.23;
-    public static final double kI = 200;
+    public static final double kI = 250;
     public static final double kD = 0.00;
   }
 

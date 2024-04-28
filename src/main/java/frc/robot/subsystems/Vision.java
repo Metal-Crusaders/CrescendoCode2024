@@ -67,6 +67,11 @@ public class Vision extends SubsystemBase{
         return targetTicks;
     }
 
+    // public double getSelectorEncoderTicks() {
+    //     return selectedAngle;
+    //     // return targetTicks;
+    // }
+
     @Override
     public void periodic() {
 
@@ -86,7 +91,7 @@ public class Vision extends SubsystemBase{
         if (tv == 0) {
             targetTicks = 0.19;
         } else {
-            targetTicks = 0.2245 + -0.00072254 * this.getTagDistance();
+            targetTicks = 0.23 + -0.00072254 * this.getTagDistance();
         }
         
             

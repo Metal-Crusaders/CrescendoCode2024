@@ -85,7 +85,7 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.setHeadingCorrection(true); // Heading correction should only be used while controlling the robot via angle.
     // swerveDrive.setMaximumSpeeds(8, 8, 8);
     swerveDrive.getGyro().setInverted(false);
-    swerveDrive.setCosineCompensator(false);    
+    swerveDrive.setCosineCompensator(true); // TODO change this and see if it helps
     v_limeLightX = NetworkTableInstance.getDefault().getTable("limelight").getEntry("tx");
     setupPathPlanner();
   }
@@ -173,6 +173,28 @@ public class SwerveSubsystem extends SubsystemBase
     return run(() -> {
       double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
       double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
+
+      // double xInput = translationX.getAsDouble();
+      // double yInput = translationY.getAsDouble();
+
+      // double magnitude = Math.hypot(xInput, yInput);
+      
+      // // small magnitude impl. from Rotation2d
+      // double cos, sin;
+      // if (magnitude > 1e-6) {
+      //   sin = yInput / magnitude;
+      //   cos = xInput / magnitude;
+      // } else {
+      //   sin = 0.0;
+      //   cos = 1.0;
+      // }
+
+      // double curvedMagnitude = Math.pow(magnitude, 3);
+
+      // double xVelocity = curvedMagnitude * cos * swerveDrive.getMaximumVelocity();
+      // double yVelocity = curvedMagnitude * sin * swerveDrive.getMaximumVelocity();
+      // TODO TEST THIS, and use xVelocity and yVelocity instead of xInput and yInput in the below driveFieldOriented method
+
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(xInput, yInput,
                                                                       headingX.getAsDouble(),
