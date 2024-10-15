@@ -1155,5 +1155,4 @@ public class SwerveDrive
       module.configuration.useCosineCompensator = enabled;
     }
   }
-
 }

@@ -71,7 +71,11 @@ public class Robot extends TimedRobot
     CommandScheduler.getInstance().run();
 
     SmartDashboard.putNumber("Pivot Encoder Ticks", m_robotContainer.pivot.getEncoderTicks());
-    // SmartDashboard.putString("Shamper Mode", m_robotContainer.shamper.getModeString());
+    SmartDashboard.putString("Shamper Mode", m_robotContainer.shamper.getModeString());
+
+    // Tentative Robot Pose Estimation!
+    SmartDashboard.putNumber("Swerve Drive Pose X", m_robotContainer.drivebase.getPose().getX());
+    SmartDashboard.putNumber("Swerve Drive Pose Y", m_robotContainer.drivebase.getPose().getY());
 
   }
 

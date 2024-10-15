@@ -22,7 +22,7 @@ public class AlwaysOnIntake extends Command {
 
     private boolean intakeOn;
 
-    private final double FLOOR_INTAKE_SPEED = 0.5;
+    private final double FLOOR_INTAKE_SPEED = Intake.INTAKE_DEF_SPEED;
 
     public AlwaysOnIntake(Intake intake, BooleanSupplier inShamper, DoubleSupplier leftX, DoubleSupplier leftY, BooleanSupplier toggleBtn, XboxController xbox) {
 

@@ -21,8 +21,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotMap.DriverConstants;
+import edu.wpi.first.math.geometry.Pose2d;
 import frc.robot.commands.auto.ShootOnly;
-import frc.robot.commands.auto.TwoAndTaxi;
 import frc.robot.commands.auto.ppAutos.ShootTaxiPP;
 import frc.robot.commands.auto.ppAutos.ThreeNoteFarSidePP;
 import frc.robot.commands.auto.ppAutos.TrollAuto;
@@ -33,6 +33,7 @@ import frc.robot.commands.subroutines.AlignAmp;
 import frc.robot.commands.subroutines.AlignSpeaker;
 import frc.robot.commands.subroutines.IntakeSource;
 import frc.robot.commands.subroutines.RestMode;
+import frc.robot.commands.subroutines.FeedNote;
 import frc.robot.commands.teleop.intake.AlwaysOnIntake;
 import frc.robot.commands.teleop.intake.IntakeXSeconds;
 import frc.robot.commands.teleop.intake.RawIntake;
@@ -41,9 +42,10 @@ import frc.robot.commands.teleop.pivot.RawPivot;
 import frc.robot.commands.teleop.shamper.RawShamp;
 import frc.robot.commands.teleop.shamper.ShootAmp;
 import frc.robot.commands.teleop.shamper.ShootSpeaker;
-import frc.robot.commands.teleop.swervedrive.AbsoluteDriveK;
+import frc.robot.commands.teleop.swervedrive.AbsoluteDrive;
+// import frc.robot.commands.teleop.swervedrive.AbsoluteDriveAdv;
 import frc.robot.commands.teleop.swervedrive.KarthikDrive;
-import frc.robot.commands.teleop.swervedrive.SnapAngleAuto;
+import frc.robot.commands.teleop.swervedrive.RotationalDrive;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Pivot;
 import frc.robot.subsystems.Shamper;
@@ -74,7 +76,7 @@ public class RobotContainer
   final Vision vision = new Vision();
 
   // Button-related commands
-  Command shootSpeaker, shootAmp, shootCmd, ampAlignCmd, speakerAlignCmd, restCmd, intakeSourceCmd;
+  Command shootSpeaker, shootAmp, shootCmd, ampAlignCmd, speakerAlignCmd, restCmd, intakeSourceCmd, feedNoteCmd;
 
   // CommandJoystick driverController   = new CommandJoystick(3);//(OperatorConstants.DRIVER_CONTROLLER_PORT);
   XboxController driverXbox = new XboxController(RobotMap.DriverConstants.DRIVER_ID);
@@ -98,6 +100,21 @@ public class RobotContainer
         () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
         () -> driverXbox.getRightX(),
         () -> driverXbox.getRightY());
+
+    Command driveRotateControl = drivebase.driveCommand(
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
+      () -> (-1 * driverXbox.getRightX())
+    ); // TODO ATTEMPT THIS AND SEE OUTPUT
+
+    JoystickButton faceBtn = new JoystickButton(driverXbox, 1);
+    Command rotationalDrive = new RotationalDrive( // 
+      drivebase,
+      () -> MathUtil.applyDeadband(driverXbox.getLeftY(), DriverConstants.LEFT_Y_DEADBAND),
+      () -> MathUtil.applyDeadband(driverXbox.getLeftX(), DriverConstants.LEFT_X_DEADBAND),
+      () -> (-1 * driverXbox.getRightX()),
+      () -> faceBtn.getAsBoolean()
+    ); // TODO ATTEMPT THIS ONE AS WELL!!
 
     Command simDrive = drivebase.simDriveCommand(
       () -> MathUtil.applyDeadband(driverXbox.getLeftY(), RobotMap.DriverConstants.LEFT_Y_DEADBAND),
@@ -131,10 +148,15 @@ public class RobotContainer
     restCmd = new RestMode(pivot, shamper);
     ampAlignCmd = new AlignAmp(pivot, shamper);
     speakerAlignCmd = new AlignSpeaker(drivebase, pivot, shamper, vision, intake);
+    feedNoteCmd = new FeedNote(drivebase, pivot, shamper, vision, intake,
+      () -> (drivebase.getPose().getX()),
+      () -> (drivebase.getPose().getY())
+    );
     intakeSourceCmd = new IntakeSource(pivot, shamper, vision, intake);
 
     // Default Commands
-    CommandScheduler.getInstance().setDefaultCommand(drivebase, driveFieldOrientedDirectAngle);
+    CommandScheduler.getInstance().setDefaultCommand(drivebase, rotationalDrive);
+    // CommandScheduler.getInstance().setDefaultCommand(drivebase, karthikDrive);
     CommandScheduler.getInstance().setDefaultCommand(intake, alwaysOnIntake);
     CommandScheduler.getInstance().setDefaultCommand(pivot, rawPivot);
     CommandScheduler.getInstance().setDefaultCommand(shamper, rawShamper);
@@ -175,7 +197,8 @@ public class RobotContainer
   {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
 
-    new JoystickButton(driverXbox, 5).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    new JoystickButton(driverXbox, 7).onTrue((new InstantCommand(drivebase::zeroGyro)));
+    new JoystickButton(driverXbox, 8).onTrue((new InstantCommand(() -> drivebase.resetOdometry(new Pose2d()))));
 
     new JoystickButton(operatorXbox, 1).onTrue(shootCmd);
     // new JoystickButton(driverXbox, 1).onTrue(new PivotTickPreset(pivot, () -> vision.getSelectorEncoderTicks()));
@@ -183,6 +206,8 @@ public class RobotContainer
     new JoystickButton(operatorXbox, 3).onTrue(speakerAlignCmd);
     new JoystickButton(operatorXbox, 4).onTrue(ampAlignCmd);
     new JoystickButton(operatorXbox, 5).onTrue(intakeSourceCmd);
+    new JoystickButton(operatorXbox, 6).onTrue(feedNoteCmd);
+
 
 
     // JoystickButton shootSpeakerBtn = new JoystickButton(operatorXbox, 5);

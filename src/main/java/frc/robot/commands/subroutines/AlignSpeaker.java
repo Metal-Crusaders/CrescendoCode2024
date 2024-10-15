@@ -29,7 +29,7 @@ public class AlignSpeaker extends SequentialCommandGroup {
             new PivotTickPreset(pivot, () -> 0.14),
             new ParallelCommandGroup(
                 new RevSpeaker(shamper, intake, () -> vision.getTargetSpeed()),
-                new AlignToTarget(swerve, () -> vision.getAngularVelocity(), 0.5),
+                new AlignToTarget(swerve, () -> vision.getAngularVelocity(), 1),
                 // swerve.aimAtTarget(),
                 new PivotTickPreset(pivot, () -> vision.getTargetEncoderTicks())
             ),

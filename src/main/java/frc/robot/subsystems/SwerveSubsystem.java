@@ -101,6 +101,60 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive = new SwerveDrive(driveCfg, controllerCfg, maximumSpeed);
   }
 
+  public double scaleX(double xInput, double yInput) {
+
+    // return xInput;
+
+    double magnitude = Math.hypot(xInput, yInput);
+    
+    // small magnitude impl. from Rotation2d
+    double cos, sin;
+    if (magnitude > 1e-6) {
+      sin = yInput / magnitude;
+      cos = xInput / magnitude;
+    } else {
+      sin = 0.0;
+      cos = 1.0;
+    }
+
+    double curvedMagnitude = Math.pow(magnitude, 3);
+
+    double xVelocity = curvedMagnitude * cos * swerveDrive.getMaximumVelocity();
+
+    return xVelocity;
+  }
+
+  public double scaleY(double xInput, double yInput) {
+
+    // return yInput;
+
+    double magnitude = Math.hypot(xInput, yInput);
+    
+    // small magnitude impl. from Rotation2d
+    double cos, sin;
+    if (magnitude > 1e-6) {
+      sin = yInput / magnitude;
+      cos = xInput / magnitude;
+    } else {
+      sin = 0.0;
+      cos = 1.0;
+    }
+
+    double curvedMagnitude = Math.pow(magnitude, 3);
+
+    double yVelocity = curvedMagnitude * sin * swerveDrive.getMaximumVelocity();
+
+    return yVelocity;
+  }
+
+  public double getMaximumVelocity() {
+    return swerveDrive.getMaximumVelocity();
+  }
+
+  public double getMaximumAngularVelocity() {
+    return swerveDrive.getMaximumAngularVelocity();
+  }
+
   /**
    * Setup AutoBuilder for PathPlanner.
    */
@@ -171,28 +225,13 @@ public class SwerveSubsystem extends SubsystemBase
   {
     swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
-      double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
-      double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
+      // double xInput = Math.pow(translationX.getAsDouble(), 3); // Smooth controll out
+      // double yInput = Math.pow(translationY.getAsDouble(), 3); // Smooth controll out
 
-      // double xInput = translationX.getAsDouble();
-      // double yInput = translationY.getAsDouble();
+      double xInput = scaleX(translationX.getAsDouble(), translationY.getAsDouble());
+      double yInput = scaleY(translationX.getAsDouble(), translationY.getAsDouble());
 
-      // double magnitude = Math.hypot(xInput, yInput);
       
-      // // small magnitude impl. from Rotation2d
-      // double cos, sin;
-      // if (magnitude > 1e-6) {
-      //   sin = yInput / magnitude;
-      //   cos = xInput / magnitude;
-      // } else {
-      //   sin = 0.0;
-      //   cos = 1.0;
-      // }
-
-      // double curvedMagnitude = Math.pow(magnitude, 3);
-
-      // double xVelocity = curvedMagnitude * cos * swerveDrive.getMaximumVelocity();
-      // double yVelocity = curvedMagnitude * sin * swerveDrive.getMaximumVelocity();
       // TODO TEST THIS, and use xVelocity and yVelocity instead of xInput and yInput in the below driveFieldOriented method
 
       // Make the robot move
@@ -389,8 +428,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, double headingX, double headingY)
   {
-    xInput = Math.pow(xInput, 3);
-    yInput = Math.pow(yInput, 3);
+    xInput = scaleX(xInput, yInput);
+    yInput = scaleY(xInput, yInput);
     return swerveDrive.swerveController.getTargetSpeeds(xInput,
                                                         yInput,
                                                         headingX,
@@ -410,8 +449,8 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, Rotation2d angle)
   {
-    xInput = Math.pow(xInput, 3);
-    yInput = Math.pow(yInput, 3);
+    xInput = scaleX(xInput, yInput);
+    yInput = scaleY(xInput, yInput);
     return swerveDrive.swerveController.getTargetSpeeds(xInput,
                                                         yInput,
                                                         angle.getRadians(),

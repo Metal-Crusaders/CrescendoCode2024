@@ -11,21 +11,29 @@ public class Vision extends SubsystemBase{
 
     double tv, tx, ty, ta;
     double selectedAngle = 0.06, targetTicks;
-    SendableChooser<Double> angleChooser;
+    SendableChooser<Double> angleChooser, speedChooser;
 
     // Working Velocity and Angle: 0.95 at 0.16 ticks
 
     public Vision() {
 
         this.angleChooser = new SendableChooser<>();
-        for (double i = 0.06; i < 0.20; i += 0.01) {
-            this.angleChooser.addOption(Double.toString(i), i);
+        for (double i = 0.06; i < 0.27; i += 0.01) {
+            this.angleChooser.addOption(Double.toString((double)Math.round(i *  100) / 100), i);
         }
 
         this.angleChooser.setDefaultOption("0.06", 0.06);
 
-        // SmartDashboard.putData("Angle Selector", angleChooser);
+        SmartDashboard.putData("Angle Selector", angleChooser);
 
+        this.speedChooser = new SendableChooser<>();
+        for (double i = 0.1; i < 1.1; i += 0.1) {
+            this.speedChooser.addOption(Double.toString((double)Math.round(i *  100) / 100), i);
+        }
+
+        this.speedChooser.setDefaultOption("0.1", 0.06);
+
+        SmartDashboard.putData("Speed Selector", speedChooser);
     }
 
     public double getAngularVelocity() {
@@ -38,7 +46,7 @@ public class Vision extends SubsystemBase{
     public double getTargetSpeed() {
         // if (tv == 0)
         //     return 0.3;
-        return 1;
+        return 0.8;
     }
 
     public double getTagDistance() {
@@ -88,10 +96,12 @@ public class Vision extends SubsystemBase{
 
         selectedAngle = angleChooser.getSelected();
 
+        // targetTicks = selectedAngle; // TODO UNCOMMENT TH`IS FOR TUNING STUFF! ALSO, can set the swerve angular velocity tx to just be 0 for whatever we need
+
         if (tv == 0) {
             targetTicks = 0.19;
         } else {
-            targetTicks = 0.23 + -0.00072254 * this.getTagDistance();
+            targetTicks = 0.22 + -0.00072254 * this.getTagDistance();
         }
         
             
