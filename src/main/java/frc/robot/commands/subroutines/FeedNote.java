@@ -20,6 +20,7 @@ import frc.robot.subsystems.Shamper;
 import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.Vision;
 import java.lang.Math;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class FeedNote extends SequentialCommandGroup {
 
@@ -35,7 +36,8 @@ public class FeedNote extends SequentialCommandGroup {
         this.yPose = yPose;
 
         // this.angle = -1 * Math.atan(this.yPose.getAsDouble() / this.xPose.getAsDouble());
-        this.angle = 0.62;
+        DriverStation.Alliance alliance = DriverStation.getAlliance().get();
+        this.angle = (alliance == DriverStation.Alliance.Red) ? 0.62 : -0.62;
 
         this.headingX = Math.sin(this.angle);
         this.headingY = Math.cos(this.angle);
